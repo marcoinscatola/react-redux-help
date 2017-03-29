@@ -169,9 +169,9 @@ In react potremmo avere
         }
     }
 ```
-###### Attenzione!
-props e state non vanno mai modificate direttamente!
-Un'istruzione del tipo ```this.props.label = "Testo"``` va assolutamente evitata. Modificando props o state direttamente React non ha modo di sapere che è avvenuta una modifica e non chiamerà il metodo render del componente interessato. Quindi a schermo non vedremo nessun cambiamento.
+> **Attenzione!**
+> props e state non vanno mai modificate direttamente!
+> Un'istruzione del tipo ```this.props.label = "Testo"``` va assolutamente evitata. Modificando props o state direttamente React non ha modo di sapere che è avvenuta una modifica e non chiamerà il metodo render del componente interessato. Quindi a schermo non vedremo nessun cambiamento.
 
 Per modificare props è necessario che sia il componente *parent* a passare proprietà diverse al component *child*, magari in base a una logica condizionale nel suo metodo render.
 Per modificare state, va usato il metodo ```this.setState``` presente in ogni componente React creato a partire dalla classe Component.
