@@ -293,5 +293,5 @@ render() {
         </div>
     )
 }
-
+// in questo esempio il tag <Icon> diventerà <i class="fa fa-user fa-lg" />
 ```
