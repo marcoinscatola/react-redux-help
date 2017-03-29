@@ -229,6 +229,69 @@ class MyComponent extends Component {
 }
 ```
 #### Esempio di stateless component
+Un componente stateless non ha uno stato interno (come suggerisce il nome) e non ha accesso a nessun dato eccetto per le proprietà passategli. E' detto anche componente puro perché la funzione che lo definisce è una funzione pura, ovvero non ha effetti collaterali e per lo stesso input produrrà sempre lo stesso output.
+Nell'esempio che segue ```ListItem``` è uno stateless component
 ```js
+    function ListItem(props) {
+        let label = props.label;
+        return (
+            <li>{label}</li>
+        )
+    }
     
+    var labels = [
+        "Elemento 1",
+        "Elemento 2",
+        "Elemento 3"
+    ]
+    
+    class MyList extends Component {
+        render() {
+            return (
+                <ul>
+                {
+                    labels.map(function(label) {
+                       return (<ListItem label={label} />)
+                    })
+                }
+                </ul>
+            )
+        }
+    }
+
+```
+Un componente stateless può anche essere complesso nella sua logica, ecco un esempio di un componente ```Icon``` che renderizza un tag ```<i>``` con le classi utilizzate da font-awesome per definire le icone (fa-nome-icona, fa-lg etc)
+
+```jsx
+    // per via di come funziona il transpiler, va comunque importato React nei file dove si usa JSX
+import React from 'react';
+function Icon(props) {
+    // 'fa' è la classe base di font-awesome, la proprietà name contiene
+    // il nome dell'icona 
+    var iconClasses = ["fa", "fa-"+props.name];
+    // se la proprietà large è presente, aggiunge la classe 'fa-lg'
+    // che rende l'icona più grande rispetto al testo circostante
+    if (props.large)
+        iconClasses.push("fa-lg");
+ 
+    var className = iconClasses.join(" ");
+
+    return (
+        <i className={className}/>
+    );
+}
+
+// esempio d'uso
+[...]
+render() {
+    return (
+        <div>
+            <label>
+                <Icon name="user" large /><span>Username</span>
+            </label>
+            <input type="text" />
+        </div>
+    )
+}
+
 ```
