@@ -5,15 +5,115 @@ I componenti sono le parti di cui si compongono le app sviluppate in React. Un c
 
 Un componente può contenere altri componenti. Dividendo l'UI dell'app in diversi componenti separati, è possibile creare diverse interfacce semplicemente mettendo insieme i componenti creati e definendo la logica con cui devono comunicare tra loro.
 
-## JSX
-Nei componenti React è possibile usare il linguaggio JSX, che permette di combinare html e javascript per creare template per i componenti.
+## Metodi
+React mette a disposizione alcuni metodi predefiniti che vengono automaticamente chiamati in determinati momenti del lifecycle del componente. Di seguito due dei più importanti:
+- componentDidMount  
+Viene chiamato automaticamente subito dopo che il componente è stato aggiunto all'html della pagina. In questo metodo spesso si eseguono operazioni di inizializzazione del componente o di richiesta di dati dal server  
+```js
+    componentDidMount() {
+        this.init();
+        this.getServerData();
+    }
+```
+- render  
+Viene chiamato ogni volta che React decide che il componente deve essere aggiornato. Deve ritornare l'html che corrisponde a quel componente. Anche se tecnicamente è possibile scrivere l'html attraverso i metodi React.createElement e React.createComponent, l'unico metodo 'sano' per ritornare qualcosa di leggibile è di usare JSX, che permette di usare una sintassi simile a HTML all'interno di un metodo javascript (vedi paragrafo più avanti)
 ```jsx
+    render() {
+        return (
+            <div>
+                <span>Componente</span>
+                <span>Personalizzato</span>
+            </div>
+        )
+    }
+```
+
+
+## JSX
+Nei componenti React è possibile usare il linguaggio JSX, che permette di combinare html e javascript per creare template per i componenti. E' preferibile inserire il codice JSX tra parentesi tonde, mentre è *obbligatorio* che le espressioni javascript siano dentro parentesi graffe. 
+
+```jsx
+render() {
     var currentDate = new Date().toString();
     return (
         <div>
             {currentDate}
         </div>
     )
+}
+```
+
+Ci sono due particolarità da tenere a mente. ```class``` e ```for``` sono proprietà degli elementi html, ma sono anche keyword riservate in javascript. 
+Solo per queste due proprietà, esistono delle alternative da usare in JSX, rispettivamente ```className``` e ```htmlFor```
+
+```jsx
+render() {
+    var active = this.props.active;
+    var className = active?"active":"inactive";
+    return (
+        <div className={className}>
+            <label htmlFor="username">Esempio</label>
+            <input id="username" />
+        </div>
+    )
+}
+```
+> **Attenzione!**
+> All'interno del JSX si possono inserire solo espressioni javascript valutabili. Come regola generale, se non è possibile scriverlo nell'assegnazione di una variabile, non è possibile scriverlo in JSX;
+```jsx
+// esempio SBAGLIATO, va in errore
+render() {
+    var active = true;
+    return (
+        <div>
+            { 
+                if (active) 
+                    return "Attivo!"
+                else 
+                    return "Non attivo!"
+            }
+         </div>
+     )   
+}
+
+// esempio CORRETTO
+render() {
+    var active = true;
+    return (
+        <div>
+            {active?"Attivo!":"Non attivo!"}
+         </div>
+     )
+    
+}
+```
+```jsx
+// esempio SBAGLIATO, va in errore
+render() {
+    var array = ["Elemento1","Elemento2","Elemento3"];
+    return (
+        <ul>
+            { 
+                for (var i = 0; i < array.length; i++)
+                    return (<li>{array[i]}</li>);
+            }
+         </ul>
+     )   
+}
+
+// esempio CORRETTO
+render() {
+    var array = ["Elemento1","Elemento2","Elemento3"];
+    return (
+        <ul>
+            {
+                array.map(function(el) {
+                    return (<li>{el}</li>);
+                }
+            }
+         </ul>
+     )
+}
 ```
 
 
@@ -76,6 +176,25 @@ Un'istruzione del tipo ```this.props.label = "Testo"``` va assolutamente evitata
 Per modificare props è necessario che sia il componente *parent* a passare proprietà diverse al component *child*, magari in base a una logica condizionale nel suo metodo render.
 Per modificare state, va usato il metodo ```this.setState``` presente in ogni componente React creato a partire dalla classe Component.
 setState prende come parametro il nuovo stato del componente, e automaticamente chiama render() in modo da aggiornare la visualizzazione a schermo del componente.
+```jsx
+
+render() {
+    let active = this.state.active;
+    return (
+        <div onClick={this.handleToggle}>
+            {active?"Elemento Attivo!":"Elemento non attivo"}
+        </div>
+    )
+}
+
+handleToggle() {
+    let active = this.state.active;
+    this.setState({
+        active: !active
+    })
+}
+
+```
 
 
 ## Come si creano
@@ -84,18 +203,19 @@ Esistono due modi principali per creare un componente:
 - Scrivere una semplice funzione che restituisca l'html da renderizzare ("stateless component" detto anche "pure component")
 
 ##### Esempio di stateful component
-#
 ```js
 // sintassi ES6 di import
 import React, {Component} from 'react';
 
-// sintassi ES6, MyComponent è il nome del mio componente, Component è il componente base definito nella libreria
+// sintassi ES6, MyComponent è il nome del mio componente, 
+// Component è il componente base definito nella libreria
 // React di cui estendo il comportamento
 class MyComponent extends Component {
     // metodo chiamato quando viene richiesta una nuova istanza del componente
     constructor(props) {
-        // super chiama l'implementazione dello stesso metodo nella classe originale da cui deriva il componente,
-        // quindi chiama il metodo constructor della classe Component. E' obbligatorio che sia la prima istruzione 
+        // 'super' chiama l'implementazione dello stesso metodo nella classe 
+        // originale da cui deriva il componente, quindi chiama il metodo constructor
+        //  della classe Component. E' obbligatorio che sia la prima istruzione 
         // del metodo constructor di un componente React
         super(props);
     }
