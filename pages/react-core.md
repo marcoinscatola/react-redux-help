@@ -203,7 +203,7 @@ Esistono due modi principali per creare un componente:
 - Scrivere una semplice funzione che restituisca l'html da renderizzare ("stateless component" detto anche "pure component")
 
 ##### Esempio di stateful component
-```js
+```jsx
 // sintassi ES6 di import
 import React, {Component} from 'react';
 
@@ -229,3 +229,6 @@ class MyComponent extends Component {
 }
 ```
 #### Esempio di stateless component
+```js
+    
+```
