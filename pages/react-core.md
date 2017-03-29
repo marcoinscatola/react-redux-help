@@ -123,8 +123,8 @@ Due parti fondamentali dei componenti in react sono lo stato e le proprietà dei
 Lo stato del componente è accessibile dal componente stesso in  ```this.state```.
 Lo stato viene usato per tutto ciò che riguarda esclusivamente lo stato interno del componente e che non dipende dagli altri componenti. Ad esempio può rappresentare lo stato di focus di un input, o il timer interno di un div che fa un conto alla rovescia. 
 
-Le proprietà sono parametri del componente che vengono ricevuti dall'esterno e sono accessibili dal componente in ```this.props```
-Ad esempio poniamo il caso di un componente MyInput che si consiste in una label e un input html. Proprietà come placeholder, type etc andrebbero gestite come *props*, perché non è MyInput a decidere il suo type, il suo placeholder, la sua label etc, ma è il componente che lo contiene a specificare questi parametri per lui al momento del render, passandole come se fossero proprietà html (vedi codice sotto)
+Le proprietà sono parametri del componente che vengono ricevuti dall'esterno e sono accessibili dal componente in ```this.props``` 
+Ad esempio poniamo il caso di un componente MyInput che si consiste in una label e un input html. Proprietà come placeholder, type etc andrebbero gestite come *props*, perché non è MyInput a decidere il suo type, il suo placeholder, la sua label etc, ma è il componente che lo contiene a specificare questi parametri per lui al momento del render, passandole come se fossero proprietà html (vedi codice sotto) 
 Come in html avremmo
 ```html
     <div>
@@ -173,8 +173,8 @@ In react potremmo avere
 > props e state non vanno mai modificate direttamente!
 > Un'istruzione del tipo ```this.props.label = "Testo"``` va assolutamente evitata. Modificando props o state direttamente React non ha modo di sapere che è avvenuta una modifica e non chiamerà il metodo render del componente interessato. Quindi a schermo non vedremo nessun cambiamento.
 
-Per modificare props è necessario che sia il componente *parent* a passare proprietà diverse al component *child*, magari in base a una logica condizionale nel suo metodo render.
-Per modificare state, va usato il metodo ```this.setState``` presente in ogni componente React creato a partire dalla classe Component.
+Per modificare props è necessario che sia il componente *parent* a passare proprietà diverse al component *child*, magari in base a una logica condizionale nel suo metodo render. 
+Per modificare state, va usato il metodo ```this.setState``` presente in ogni componente React creato a partire dalla classe Component. 
 setState prende come parametro il nuovo stato del componente, e automaticamente chiama render() in modo da aggiornare la visualizzazione a schermo del componente.
 ```jsx
 
@@ -229,7 +229,7 @@ class MyComponent extends Component {
 }
 ```
 #### Esempio di stateless component
-Un componente stateless non ha uno stato interno (come suggerisce il nome) e non ha accesso a nessun dato eccetto per le proprietà passategli. E' detto anche componente puro perché la funzione che lo definisce è una funzione pura, ovvero non ha effetti collaterali e per lo stesso input produrrà sempre lo stesso output.
+Un componente stateless non ha uno stato interno (come suggerisce il nome) e non ha accesso a nessun dato eccetto per le proprietà passategli. E' detto anche componente puro perché la funzione che lo definisce è una funzione pura, ovvero non ha effetti collaterali e per lo stesso input produrrà sempre lo stesso output. 
 Nell'esempio che segue ```ListItem``` è uno stateless component
 ```js
     function ListItem(props) {
