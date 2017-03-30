@@ -3,7 +3,14 @@ La maggior parte della sintassi che segue non aggiunge nuove funzionalità, ma p
 La compatibilità è garantità dal transpilatore (che andremo ad usare in ogni caso per JSX) che converte il tutto in codice valido anche su browser datati come IE8.  
 A prescindere che si voglia utilizzare o meno la sintassi che segue, è importante conoscerla perché è costantemente presente nei tutorial e nelle librerie dell'ecosistema React.  
 
-## Parametri con valori predefiniti
+- [Parametri con valori predefiniti](#default)
+- [let e const](#letconst)
+- [Arrow Functions](#arrows)
+- [Spread e rest operator](#spreadrest)
+- [Destructuring](#destruct)
+- [Import/Export](#importexport)
+
+## <a name="default"></a>Parametri con valori predefiniti
 Permette di specificare un valore di default per un parametro di una funzione, scrivendolo nel formato ```nomeParametro=valoreDefault```
 ```js
 // Sintassi ES6
@@ -24,7 +31,7 @@ function creaIndice(index, label) {
 }
 ```
 
-## let e const
+## <a name="letconst"></a>let e const
 Queste due nuove parole chiave vanno ad aggiungersi a ```var``` nella dichiarazione delle variabili e delle costanti.
 
 ```const``` definisce una constante, il suo uso è praticamente identico a ```var``` con la differenza che l'interprete javascript andrà in errore se provo a cambiare il valore assegnato alla costante, o a fare più di un'assegnazione.
@@ -49,7 +56,7 @@ Queste due nuove parole chiave vanno ad aggiungersi a ```var``` nella dichiarazi
 Tendenzialmente ```let``` può sostituire var in ogni suo uso e rende più difficile che si creino errori per via di variabili impostate inavvertitamente con lo stesso nome. 
 ```const``` viene usato per tutti quei valori che non variano all'interno del blocco di codice in cui sono definiti, e ha il vantaggio di produrre errori se si prova a cambiarne il valore.
 
-## Arrow functions
+## <a name="arrows"></a>Arrow functions
 L'arrow function è un tipo particolare di funzione con una dichiarazione più concisa della function tradizionale.
 La sintassi dell'arrow function è ```(param1, param2, ...) => returnExpression``` oppure ```(param1, param2, ...) => { statements }``` se è necessario eseguire operazioni non sintetizzabili in un'espressione. Nel caso di un solo parametro si possono omettere le parentesi tonde. 
 Esempi: 
@@ -158,7 +165,7 @@ La brevità della sintassi inoltre migliora la leggibilità nel caso ci siano da
 
 ```
 
-## Spread e Rest operator
+## <a name="spreadrest"></a>Spread e Rest operator
 Sia lo spread che il rest operator sono identificati dalla sintassi ```...nomeVariabile```, è il contesto a definire quale dei due si sta usando.  
 
 Rest operator raggruppa le 'rimanenze' di una serie di valori in un nuovo array o in un nuovo oggetto. 
@@ -261,7 +268,7 @@ let newApplicationState = setReady(applicationState)
 applicationState === newApplicationState // false
 ```
 
-## Destructuring
+## <a name="destruct"></a>Destructuring
 Con questa sintassi è possibile semplificare l'estrazione dei dati dagli oggetti o dagli array. Viene usato spesso per rendere più leggeri e leggibili i setter iniziali dei metodi che ricevono i parametri in oggetti complessi.
 Esempi base:
 ```js
@@ -381,5 +388,5 @@ handleAction(action)
 ```
 
 
-## Import / Export
+## <a name="importexport"></a>Import / Export
 [Da completare]
