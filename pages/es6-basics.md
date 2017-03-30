@@ -24,19 +24,44 @@ function creaIndice(index, label) {
 }
 ```
 
+## let e const
+Queste due nuove parole chiave vanno ad aggiungersi a ```var``` nella dichiarazione delle variabili e delle costanti.
+
+```const``` definisce una constante, il suo uso è praticamente identico a ```var``` con la differenza che l'interprete javascript andrà in errore se provo a cambiare il valore assegnato alla costante, o a fare più di un'assegnazione.
+```js
+	const TEST = 1;
+	TEST = 2; // errore
+	const TEST = 2 // errore
+```
+
+```let``` funziona in maniera diversa da ```var``` nella gestione della visibilità della variabile. Mentre una variabile definita con ```var``` è visibile in tutta la funzione in cui la variabile è stata definita, ```let``` limita la visibilità al blocco di codice in cui si trova. 
+```js
+	var x = 20;
+	if (true) {
+		let x = 10;
+		let y = 100;
+		console.log(x); // output: 10;
+		console.log(y); // output: 100;
+	}
+	console.log(x); // output: 20;
+	console.log(y); // output: undefined
+```
+Tendenzialmente ```let``` può sostituire var in ogni suo uso e rende più difficile che si creino errori per via di variabili impostate inavvertitamente con lo stesso nome. 
+```const``` viene usato per tutti quei valori che non variano all'interno del blocco di codice in cui sono definiti, e ha il vantaggio di produrre errori se si prova a cambiarne il valore.
+
 ## Arrow functions
 L'arrow function è un tipo particolare di funzione con una dichiarazione più concisa della function tradizionale.
 La sintassi dell'arrow function è ```(param1, param2, ...) => returnExpression``` oppure ```(param1, param2, ...) => { statements }``` se è necessario eseguire operazioni non sintetizzabili in un'espressione. Nel caso di un solo parametro si possono omettere le parentesi tonde. 
 Esempi: 
 ```js
-  var sum = (a, b) => a + b;
+  const sum = (a, b) => a + b;
   sum(1,3) // output: 4
   
-  var double = x => x * 2;
+  const double = x => x * 2;
   double(5) //output: 10
   
-  var handleClick = event => {
-    var target = event.target;
+  const handleClick = event => {
+    let target = event.target;
     target.style.color = "red"
   }
 ```
@@ -45,7 +70,7 @@ Questo è un enorme vantaggio che risolve il problema del mantenere il contesto 
 Esempi: 
 ```js
   // sintassi ES6
-  var TranslationApp = {
+  const TranslationApp = {
     dictionary: {
       cane: "dog",
       gatto: "cat",
@@ -75,7 +100,7 @@ Esempi:
 
 ```js
   // sintassi ES6
-  var InputHandler = {
+  const InputHandler = {
     clicked: 0,
     bindEvents: function() {
       document.body.addEventListener("click", () => {
@@ -97,7 +122,7 @@ Esempi:
 ```
 La brevità della sintassi inoltre migliora la leggibilità nel caso ci siano da concatenare diverse funzioni anonime, ad esempio:
 ```js
-  var dati = [
+  const people = [
   {name: "John", age: 31}, 
   {name: "Gary", age: 25}, 
   {name: "Jane", age: 23}, 
@@ -107,13 +132,13 @@ La brevità della sintassi inoltre migliora la leggibilità nel caso ci siano da
 // un array con i loro nomi in ordine alfabetico
 
 // sintassi ES6
-  dati
+  people
     .filter(person => person.age > 20)
     .map(person => person.name)
     .sort();
   
 // sintassi ES5
-  dati
+  people
   .filter(function(person) {
     return person.age > 20;
   })
@@ -123,13 +148,13 @@ La brevità della sintassi inoltre migliora la leggibilità nel caso ci siano da
   .sort();
 
 // alternativa ES5 senza filter/map
-  var datiFinali = [];
+  var res = [];
   for (var i = 0; i < dati.length; i++) {
-    var person = dati[i];
+    var person = people[i];
     if (person.age > 20)
-      datiFinali.push(person.name)
+      res.push(person.name)
   }
-  datiFinali.sort();
+  res.sort();
 
 ```
 
@@ -145,8 +170,8 @@ function addValuesToArray(array, ...values) {
   return array.concat(values);
 }
 
-var arr = [1,2,3]
-var arr2 = addValuesToArray(arr, 4, 5, 6, 7)
+let arr = [1,2,3]
+let arr2 = addValuesToArray(arr, 4, 5, 6, 7)
 // arr2 = [1,2,3,4,5,6,7]
 
 // Equivalente ES5
@@ -163,14 +188,14 @@ function addValuesToArray(array) {
 Spread operator è un po' il contrario del rest operator, usato di fronte ad una collection di valori (i.e. array o object) ne 'espande' il contenuto all'interno del contesto in cui è stato usato. Un esempio tipico di uso è nel caso in cui sia necessario copiare i valori di un oggetto all'interno di un altro.
 ```js
   // sintassi ES6
-  var modulo1 = { prop1: 10, prop2: 20 };
-  var modulo2 = {
+  let modulo1 = { prop1: 10, prop2: 20 };
+  let modulo2 = {
     ...modulo1,
     prop3: 30
   }
   // output: modulo2 = { prop1: 10, prop2: 20, prop3: 30 };
-  var array1 = [3,4,5];
-  var array2 = [1,2, ...array1, 6,7]
+  let array1 = [3,4,5];
+  let array2 = [1,2, ...array1, 6,7]
   // output: array2 = [1,2,3,4,5,6,7]
   
   // Equivalente ES5
@@ -187,9 +212,9 @@ Spread operator è un po' il contrario del rest operator, usato di fronte ad una
 ```
 Da notare che a seconda dell'ordine con cui viene usato lo spread operator in un oggetto è possibile usarlo per aggiornare determinati parametri o per creare una copia di un oggetto con dei parametri modificati
 ```js
-  var options = { font: "big", theme: "dark", admin: false }
-  var newOptions = { font: "small" }
-  var updatedOptions = {
+  let options = { font: "big", theme: "dark", admin: false }
+  let newOptions = { font: "small" }
+  let updatedOptions = {
     ...options,
     ...newOptions
   }
@@ -217,83 +242,106 @@ function setReady (appState) {
   return appState;
 }
 
-var applicationState = {prop1: 1, ready: false };
-var newApplicationState = setReady(applicationState)
+let applicationState = {prop1: 1, ready: false };
+let newApplicationState = setReady(applicationState)
 applicationState === newApplicationState // true, sembra che lo stato dell'app sia rimasto uguale
 ```
 In questo modo mi è impossibile paragonare il vecchio stato dell'applicazione con il nuovo, per verificare se è cambiato qualcosa. Un'alternativa corretta può essere questa: 
 ```js
 function setReady (appState) {
-  var newState = {
+  let newState = {
     ...appState,
     ready: true
   }
   return newState;
 }
 
-var applicationState = {prop1: 1, ready: false };
-var newApplicationState = setReady(applicationState)
+let applicationState = {prop1: 1, ready: false };
+let newApplicationState = setReady(applicationState)
 applicationState === newApplicationState // false
 ```
 
 ## Destructuring
-
+Con questa sintassi è possibile semplificare l'estrazione dei dati dagli oggetti o dagli array. Viene usato spesso per rendere più leggeri e leggibili i setter iniziali dei metodi che ricevono i parametri in oggetti complessi.
+Esempi base:
 ```js
 // oggetto di prova
 let obj = {
-	text: "babbo",
+	text: "testo",
 	number: 42
 }
 
-// questo
-let {text, number} = obj;
-// è uguale a scrivere
-let text = obj.text, number = obj.number;
+// sintassi ES6
+let {text, number} = obj;  // risultato: text = "testo", number = 42
+// sintassi ES5
+var text = obj.text, number = obj.number;
 
+// array di prova
+let arr = [1,2,3]
+
+// sintassi ES6
+let [uno, due, tre] = arr // risultato: uno = 1, due = 2, tre = 3
+// sintassi ES5
+var uno = arr[0], due = arr[1], tre = arr[2]
+
+```
+Come si vede dagli esempi si tratta di un assegnazione di variabile che nella parte sinistra (prima dell'uguale) replica la struttura della sorgente da cui andrà ad estrarre i dati, e crea delle variabili a partire da questa struttura.
+Nel caso del destructuring degli oggetti, le variabili prendono di default il nome e  i valori dei parametri dell'oggetto sorgente.
+Nel caso del destructuring degli array quello che conta è l'ordine delle variabili, e prendono il valore dell'array corrispondente alla posizione in cui compaiono.
+
+E' inoltre possibile assegnare dei valori di default e cambiare il nome delle variabili nel caso del destructuring degli oggetti.
+Esempi
+```js
 //complichiamoci la vita
 let obj = {
-	text: "babbo",
+	text: "testo",
 	number: 9000,
 	nested: {
-		stuff: true
+		data: true
 	}
 }
-// ti mostro gli esempi in espressioni separate 
-//ma puoi fare anche un'unica espressione
-let {text:label} = obj;
-// è uguale a 
+// per semplicità gli esempi delle diverse funzionalità sono in espressioni separate, 
+// ma si possono usare anche diverse tecniche nella stessa espressione
+
+// sintassi ES6
+let {text:label} = obj; // risultato: label = "testo"
+// sintassi ES5
 let label = obj.text;
 
-let {nested:{stuff}} = obj
-// è uguale a
-let stuff = obj.nested.stuff
+// sintassi ES6
+let {nested:{data}} = obj
+// sintassi ES5
+let data = obj.nested.data
 
-let {nonesiste=false} = obj
-// è uguale a 
+// sintassi ES6
+let {nonesiste=false} = obj // risultato: nonesiste = false, invece di undefined
+// sintassi ES5
 let nonesiste = typeof obj.nonesiste !== "undefined"?obj.nonesiste:false;
 ```
+Il destructuring diventa particolarmente potente unità agli operatori spread e rest, permettendo di separare i dati che ci servono in maniera molto più pulita
 
 ```js
-// mischiamoci spread e rest
 let obj = {
-	main: 1,
-	other: 2,
-	stuff: 3
+	id: 1,
+	val1: "test",
+	val2: true,
+	val3: null
 }
 
-let {main, ...bleh} = obj;
-// è uguale a
-let main = obj.main;
-let bleh = {
-	other: obj.other,
-	stuff: obj.stuff
+// sintassi ES6
+let {id, ...values} = obj;  // risultato: id = 1 values = { val1: "test", val2: true, val3: null };
+// sintassi ES5
+let id = obj.id;
+let values = {
+	val1: obj.val1,
+	val2: obj.val2,
+	val3: obj.val3,
 }
-
-// caso tipico, hai un elemento che rimpiazza un input di testo e 
-// ha delle props aggiuntive che gestisci tu (nell'esempio, primary e theme), ma vuoi che cose tipo
-// type, placeholder, onChange etc vengano trasferite direttamente
-// sull'input (ti metto solo il render)
-
+```
+Un caso tipico che vorrei analizzare (ma richiede di aver letto prima l'introduzione a react) riguarda la gestione di un componente che sostituisce, ad esempio, un input di testo per aggiungere delle funzionalità aggiuntive corrispondenti a delle proprietà personalizzate (nell'esempio che segue, ```primary``` e ```theme```). Però è necessario che qualsiasi altra proprietà io imposti sul mio componente venga trasferita all'input che verrà renderizzato, in modo da poter continuare ad usare proprietà come ```type```, ```placeholder```, ```onChange``` etc.
+Usando il destructuring con il rest operator posso isolare le proprietà che voglio gestire e mettere tutte le altre in un oggetto separato (nell'esempio, ```otherProps```). 
+Nella fase di render posso poi usare lo spread operator per 'distribuire' tutti i valori di ```otherProps``` sull'input.
+```jsx
 render() {
 	let {primary, theme, ...otherProps} = this.props;
 	// gestisci primary e theme come vuoi, es
@@ -303,46 +351,34 @@ render() {
 	)
 }
 
-// gestendolo così se passo altre proprietà al mio input custom 
-// oltre a quelle due vanno direttamente sull'input
-
 ```
+Il destructuring può essere usato anche nei parametri di una funzione, e estrae automaticamente le variabili dai parametri che riceverà.
+Esempio:
 ```js
-//il destructuring puoi usarlo anche nei parametri di una funzione
-// and it's really cool
-
+// questa è la struttura dell'oggetto che mi aspetto venga passato 
+// alla funzione handleAction
 let action = {
 	type: "EXAMPLE_ACTION",
 	payload: {
 		id: 1,
-		boh: 2
+		value: "test"
 	}
 }
 
-let handleAction = ({type, payload, meta={}) => {
+let handleAction = ({type, payload, meta={} }) => {
 	// l'oggetto che prende come parametro mi arriva
-	// già destructurato
-	console.log(type, payload, meta)
-	let {id, boh} = payload;
-	// e da qui in poi lavoro con id e boh
+	// già scomposto in type, payload, e meta. Non ho bisogno di 
+	// dichiararle nuovamente. la variabile meta avrà anche un valore di default
+	// impostato su un oggetto vuoto, in modo da non andare in errore se provo
+	// ad accedere, per esempio, a meta.qualcosa
+	console.log(type, payload, meta); // scriverà in console EXAMPLE_ACTION {id: 1, value: "test"} {}
+	let {id, value} = payload;
+	// e da qui in poi lavoro con id e value
+	console.log(id, value); // scriverà in console 1 "test"
 }
 
 handleAction(action)
 ```
-```js
-// funziona anche con gli array
-let arr = [1,2,3,4]
-let [head, ...rest] = arr;
-// head = 1, rest = [2,3,4]
 
-// bonus: sort in javascript "a la haskell"
-let sort = arr => {
-    if (!arr.length) return [];
-    let [head, ...tail] = arr;
-    let bigger = tail.filter(el => el > head);
-    let smaller = tail.filter(el => el <= head);
-    return [...sort(smaller), head, ...sort(bigger)];
-}
-```
 
 ## Import / Export
