@@ -102,10 +102,28 @@ E' preferibile modificare gli oggetti creando sempre un nuovo oggetto con i nuov
 Modificare un oggetto direttamente porta spesso a dei bug e dei comportamenti inattesi. 
 Per via di come sono gestiti gli oggetti in Javascript, si ha questo comportamento
 ```js
-var obj = { test: 1 }
-var obj2 = obj;
-obj2.test = 2;
-obj === obj2 // true
+function setTestToTrue (appState) {
+  appState.test = true;
+  return appState;
+}
+
+var applicationState = {prop1: 1, test: false };
+var newApplicationState = setTestToTrue(applicationState)
+applicationState === newApplicationState // true
+```
+In questo modo mi è impossibile paragonare il vecchio stato dell'applicazione con il nuovo, per verificare se è cambiato qualcosa. Un'alternativa corretta può essere questa: 
+```js
+function setTestToTrue (appState) {
+  var newState = {
+    ...appState,
+    test: true
+  }
+  return newState;
+}
+
+var applicationState = {prop1: 1, test: false };
+var newApplicationState = setTestToTrue(applicationState)
+applicationState === newApplicationState // false
 ```
 
 ## Destructuring
