@@ -98,7 +98,8 @@ Da notare che a seconda dell'ordine con cui viene usato lo spread operator in un
   })
   
 ```
-E' preferibile modificare gli oggetti creando sempre un nuovo oggetto con i nuovi valori desiderati. Architetture come Redux impongono questo limite e anche internamente React ragiona in questo modo per la gestione dello stato. 
+> **Attenzione!** E' preferibile modificare gli oggetti creando sempre un nuovo oggetto con i nuovi valori desiderati. 
+Architetture come Redux impongono questo limite e anche internamente React ragiona in questo modo per la gestione dello stato. 
 Modificare un oggetto direttamente porta spesso a dei bug e dei comportamenti inattesi. 
 Per via di come sono gestiti gli oggetti in Javascript, si ha questo comportamento
 ```js
@@ -127,5 +128,112 @@ applicationState === newApplicationState // false
 ```
 
 ## Destructuring
+
+```js
+// oggetto di prova
+let obj = {
+	text: "babbo",
+	number: 42
+}
+
+// questo
+let {text, number} = obj;
+// è uguale a scrivere
+let text = obj.text, number = obj.number;
+
+//complichiamoci la vita
+let obj = {
+	text: "babbo",
+	number: 9000,
+	nested: {
+		stuff: true
+	}
+}
+// ti mostro gli esempi in espressioni separate 
+//ma puoi fare anche un'unica espressione
+let {text:label} = obj;
+// è uguale a 
+let label = obj.text;
+
+let {nested:{stuff}} = obj
+// è uguale a
+let stuff = obj.nested.stuff
+
+let {nonesiste=false} = obj
+// è uguale a 
+let nonesiste = typeof obj.nonesiste !== "undefined"?obj.nonesiste:false;
+```
+
+```js
+// mischiamoci spread e rest
+let obj = {
+	main: 1,
+	other: 2,
+	stuff: 3
+}
+
+let {main, ...bleh} = obj;
+// è uguale a
+let main = obj.main;
+let bleh = {
+	other: obj.other,
+	stuff: obj.stuff
+}
+
+// caso tipico, hai un elemento che rimpiazza un input di testo e 
+// ha delle props aggiuntive che gestisci tu (nell'esempio, primary e theme), ma vuoi che cose tipo
+// type, placeholder, onChange etc vengano trasferite direttamente
+// sull'input (ti metto solo il render)
+
+render() {
+	let {primary, theme, ...otherProps} = this.props;
+	// gestisci primary e theme come vuoi, es
+	let style = primary?{color: red}:{color:black}
+	return (
+		<input style={style} {...otherProps} />
+	)
+}
+
+// gestendolo così se passo altre proprietà al mio input custom 
+// oltre a quelle due vanno direttamente sull'input
+
+```
+```js
+//il destructuring puoi usarlo anche nei parametri di una funzione
+// and it's really cool
+
+let action = {
+	type: "EXAMPLE_ACTION",
+	payload: {
+		id: 1,
+		boh: 2
+	}
+}
+
+let handleAction = ({type, payload, meta={}) => {
+	// l'oggetto che prende come parametro mi arriva
+	// già destructurato
+	console.log(type, payload, meta)
+	let {id, boh} = payload;
+	// e da qui in poi lavoro con id e boh
+}
+
+handleAction(action)
+```
+```js
+// funziona anche con gli array
+let arr = [1,2,3,4]
+let [head, ...rest] = arr;
+// head = 1, rest = [2,3,4]
+
+// bonus: sort in javascript "a la haskell"
+let sort = arr => {
+    if (!arr.length) return [];
+    let [head, ...tail] = arr;
+    let bigger = tail.filter(el => el > head);
+    let smaller = tail.filter(el => el <= head);
+    return [...sort(smaller), head, ...sort(bigger)];
+}
+```
 
 ## Import / Export
