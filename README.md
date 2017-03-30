@@ -1,8 +1,9 @@
 # react-redux-help
 Guide sui principi base di react e redux, per uso interno
 
-## Sintassi ES6
-
+## Javascript
+  [Concetti da rivedere]()
+  [Sintassi ES6](pages/es6-basics.md)
 ## React
   [Principi generali](pages/react-core.md)
 ## Redux
