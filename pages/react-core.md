@@ -287,7 +287,8 @@ render() {
     return (
         <div>
             <label>
-                <Icon name="user" large /><span>Username</span>
+                <Icon name="user" large />
+                <span>Username</span>
             </label>
             <input type="text" />
         </div>
