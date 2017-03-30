@@ -1,4 +1,4 @@
-Di seguito alcuni esempi di sintassi es6 che si incontrerà sicuramente lavorando in React.  
+Di seguito alcuni esempi di sintassi ES6 che si incontrerà sicuramente lavorando in React.  
 La maggior parte della sintassi che segue non aggiunge nuove funzionalità, ma permette di ottenere gli stessi risultati utilizzando meno boilerlplate e aumentando la leggibilità.  
 La compatibilità è garantità dal transpilatore (che andremo ad usare in ogni caso per JSX) che converte il tutto in codice valido anche su browser datati come IE8.  
 A prescindere che si voglia utilizzare o meno la sintassi che segue, è importante conoscerla perché è costantemente presente nei tutorial e nelle librerie dell'ecosistema React.  
@@ -22,6 +22,115 @@ function creaIndice(index, label) {
   label = typeof label === "undefined" ? "Non definito" : label;
   return index + " - " + label;
 }
+```
+
+## Arrow functions
+L'arrow function è un tipo particolare di funzione con una dichiarazione più concisa della function tradizionale.
+La sintassi dell'arrow function è ```(param1, param2, ...) => returnExpression``` oppure ```(param1, param2, ...) => { statements }``` se è necessario eseguire operazioni non sintetizzabili in un'espressione. Nel caso di un solo parametro si possono omettere le parentesi tonde. 
+Esempi: 
+```js
+  var sum = (a, b) => a + b;
+  sum(1,3) // output: 4
+  
+  var double = x => x * 2;
+  double(5) //output: 10
+  
+  var handleClick = event => {
+    var target = event.target;
+    target.style.color = "red"
+  }
+```
+L'arrow function ha la particolarità di non accettare binding di  ```this``` e di ```arguments```. Questo significa che dichiarando un arrow function all'interno di un'altro metodo potremo mantenere il valore di ```this``` senza che questo venga sovrascritto da ```bind```, ```call``` o ```apply```.
+Questo è un enorme vantaggio che risolve il problema del mantenere il contesto nelle funzioni anonime ad esempio nel caso di gestione di eventi, callback su chiamate ajax, map/filter/reduce, o in generale qualsiasi sistema che internamente usi ```bind```, ```call``` o ```apply```. 
+Esempi: 
+```js
+  // sintassi ES6
+  var TranslationApp = {
+    dictionary: {
+      cane: "dog",
+      gatto: "cat",
+      mucca: "cow"
+    },
+    translate: function(parole) {
+      return parole.map( parola => this.dictionary[parola] );
+    }
+  }
+  
+  // equivalente ES5
+  var TranslationApp = {
+    dictionary: {
+      cane: "dog",
+      gatto: "cat",
+      mucca: "cow"
+    },
+    translate: function(parole) {
+      var that = this;
+      return parole.map(function(parola){
+        return that.dictionary[parola]
+      });
+    }
+  }
+```
+
+
+```js
+  // sintassi ES6
+  var InputHandler = {
+    clicked: 0,
+    bindEvents: function() {
+      document.body.addEventListener("click", () => {
+          this.clicked += 1;
+      });
+    }
+  }
+  
+  // equivalente ES5
+  var InputHandler = {
+    clicked: 0,
+    bindEvents: function() {
+      var that = this;
+      document.body.addEventListener("click", function() {
+          that.clicked += 1;
+      });
+    }
+  }
+```
+La brevità della sintassi inoltre migliora la leggibilità nel caso ci siano da concatenare diverse funzioni anonime, ad esempio:
+```js
+  var dati = [
+  {name: "John", age: 31}, 
+  {name: "Gary", age: 25}, 
+  {name: "Jane", age: 23}, 
+  {name: "Leon", age: 18}
+]
+// obiettivo: estrai i contatti con età superiore a 20 anni e crea 
+// un array con i loro nomi in ordine alfabetico
+
+// sintassi ES6
+  dati
+    .filter(person => person.age > 20)
+    .map(person => person.name)
+    .sort();
+  
+// sintassi ES5
+  dati
+  .filter(function(person) {
+    return person.age > 20;
+  })
+  .map(function(person) {
+    return person.name;
+  })
+  .sort();
+
+// alternativa ES5 senza filter/map
+  var datiFinali = [];
+  for (var i = 0; i < dati.length; i++) {
+    var person = dati[i];
+    if (person.age > 20)
+      datiFinali.push(person.name)
+  }
+  datiFinali.sort();
+
 ```
 
 ## Spread e Rest operator
@@ -103,27 +212,27 @@ Architetture come Redux impongono questo limite e anche internamente React ragio
 Modificare un oggetto direttamente porta spesso a dei bug e dei comportamenti inattesi. 
 Per via di come sono gestiti gli oggetti in Javascript, si ha questo comportamento
 ```js
-function setTestToTrue (appState) {
-  appState.test = true;
+function setReady (appState) {
+  appState.ready = true;
   return appState;
 }
 
-var applicationState = {prop1: 1, test: false };
-var newApplicationState = setTestToTrue(applicationState)
-applicationState === newApplicationState // true
+var applicationState = {prop1: 1, ready: false };
+var newApplicationState = setReady(applicationState)
+applicationState === newApplicationState // true, sembra che lo stato dell'app sia rimasto uguale
 ```
 In questo modo mi è impossibile paragonare il vecchio stato dell'applicazione con il nuovo, per verificare se è cambiato qualcosa. Un'alternativa corretta può essere questa: 
 ```js
-function setTestToTrue (appState) {
+function setReady (appState) {
   var newState = {
     ...appState,
-    test: true
+    ready: true
   }
   return newState;
 }
 
-var applicationState = {prop1: 1, test: false };
-var newApplicationState = setTestToTrue(applicationState)
+var applicationState = {prop1: 1, ready: false };
+var newApplicationState = setReady(applicationState)
 applicationState === newApplicationState // false
 ```
 
