@@ -392,7 +392,7 @@ handleAction(action)
 Import e Export permettono rispettivamente di importare ed esportare variabili e metodi da moduli javascript.
 Questo permette di separare il codice in diversi file, importare librerie esterne solo dove servono e di condividere dati senza usare variabili con visibilità globale.
 
-Esistono due tipi di Export: export con nome e export di default. Ogni file può avere **un solo** export di default, ed un qualsiasi numero di export con nome. Di solito il valore o il metodo più importante del file si esporta come default, perché ne rende più facile l'import.
+Esistono due tipi di Export: export con nome e export di default. Ogni file può avere **un solo** export di default, ed un qualsiasi numero di export con nome. Di solito il valore o il metodo più importante del file si esporta come default, perché ne rende più facile l'import. 
 Esempio default export
 ```js
   // lib/modulo.js
@@ -400,6 +400,11 @@ Esempio default export
     return x + 1;
  };
   export default metodo;  
+  
+  // posso anche esportare direttamente la funzione
+  export default function(x) {
+    return x + 1;
+  }
 ```
 ```js  
   // index.js
@@ -410,6 +415,52 @@ Esempio default export
   // al momento dell'import
   
   import sommaUno from 'lib/modulo';
-  sommaUno(3) // output 4
+  sommaUno(3) // output 4  
+```
+
+Senza la keyword ```default``` gli export vengono considerati named export, e al momento dell'importo sarà necessario specificare il nome del valore o del metodo da importare. La sintassi prevede di fare l'export direttamente nella dichiarazione della variabile o del metodo, oppure di usare le parentesi graffe se fatto successivamente (è possibile anche combinare più export in questo modo). 
+Esempio export con nome
+```js
+  // lib/modulo.js
+ export function metodo(x) {
+    return x + 1;
+ };
+ 
+ // oppure
+ function metodo(x) {
+  return x + 1;
+ }
+ export {metodo};
+ 
+ // nel caso di più valori esportati
+ 
+ function metodo1(x) { /*...*/ }
+ function metodo2(x) { /*...*/ }
+ 
+ export {metodo1, metodo2}
+```
+```js  
+  // index.js
+  import {metodo} from 'lib/modulo';
+  metodo(3) // output 4
   
+  // se voglio cambiare il nome con cui viene importato il metodo
+  // posso usare la keyword as
+  
+  import {metodo as sommaUno} from 'lib/modulo';
+  sommaUno(3) // output 4  
+```
+E' possiile, e succede spesso, di avere sia export di default che export con nome all'interno dello stesso file. E' possibile combinare le sintassi viste finora in un unico import:
+```js
+// lib/modulo.js
+export const VAL_MIN = 10, VAL_MAX = 20;
+export default function valuta(x) {
+  return x > VAL_MIN && x < VAL_MAX
+}
+```
+```js
+// index.js
+import metodo, {VAL_MIN, VAL_MAX as max} from 'lib/modulo'
+// metodo conterrà la funzione valuta, VAL_MIN conterrà
+// il valore di VAL_MIN e max conterrà il valore di VAL_MAX
 ```
