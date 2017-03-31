@@ -480,5 +480,5 @@ mod.val2 === 20 // true
 mod.text === "Testo" // true
 ```
 
-## <a name="template></a>Template
+## <a name="template"></a>Template
 Da scrivere
