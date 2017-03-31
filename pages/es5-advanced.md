@@ -279,7 +279,36 @@ Esempi:
 
 # <a name="funcops"></a>Operazioni sulle funzioni
 Di seguito alcuni metodi fondamentali per poter utilizzare all 100% le funzioni in javascript, senza soprese inaspettate.
+
 ## <a name="call"></a>call
-Il metodo ```call``` permette di chiamare una funzione, specificando di seguito il valore di ```this``` e dei parametri con cui chiamare la funzione.
+Il metodo ```call``` permette di chiamare una funzione, specificando di seguito il valore di ```this``` e dei parametri con cui chiamare la funzione.  
+Sintassi: 
+```js
+funzione.call(thisValue, param1, param2, ...)
+```
+Esempi:
+```js
+  function sommaNumeri(a,b) {
+    return a + b;
+  }
+  sommaNumeri.call(null, 5, 10) // 15
+```
+```js
+var obj = {
+  name: "Mario",
+  getName: function() {
+    return this.name
+  }
+}
+
+var obj2 = {
+  name: "Nicola"
+}
+
+obj.getName(); // "Mario"
+obj.getName.call(obj2); // "Nicola"
+
+```
 ## <a name="apply"></a>apply
+
 ## <a name="bind"></a>bind
