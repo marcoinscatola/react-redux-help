@@ -9,6 +9,7 @@ A prescindere che si voglia utilizzare o meno la sintassi che segue, è importan
 - [Spread e rest operator](#spreadrest)
 - [Destructuring](#destruct)
 - [Import/Export](#importexport)
+- [Template](#template)
 
 ## <a name="default"></a>Parametri con valori predefiniti
 Permette di specificare un valore di default per un parametro di una funzione, scrivendolo nel formato ```nomeParametro=valoreDefault```
@@ -444,7 +445,7 @@ Esempio export con nome
   import {metodo} from 'lib/modulo';
   metodo(3) // output 4
   
-  // se voglio cambiare il nome con cui viene importato il metodo
+<a  // se voglio cambiare il nome con cui viene importato il metodo
   // posso usare la keyword as
   
   import {metodo as sommaUno} from 'lib/modulo';
@@ -478,3 +479,6 @@ mod.val1 === 10 // true
 mod.val2 === 20 // true
 mod.text === "Testo" // true
 ```
+
+## <a name="template></a>Template
+Da scrivere
