@@ -217,7 +217,7 @@ Spread operator è un po' il contrario del rest operator, usato di fronte ad una
   var array1 = [3,4,5];
   var array2 = [1,2].concat(array1).concat([6,7])
 ```
-Da notare che a seconda dell'ordine con cui viene usato lo spread operator in un oggetto è possibile usarlo per aggiornare determinati parametri o per creare una copia di un oggetto con dei parametri modificati
+Da notare che a seconda dell'ordine con cui viene usato lo spread operator in un oggetto è possibile sovrascrivere / aggiornare determinati parametri, ottenendo come risultato un nuovo oggetto.
 ```js
   let options = { font: "big", theme: "dark", admin: false }
   let newOptions = { font: "small" }
