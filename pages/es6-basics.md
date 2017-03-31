@@ -389,4 +389,27 @@ handleAction(action)
 
 
 ## <a name="importexport"></a>Import / Export
-[Da completare]
+Import e Export permettono rispettivamente di importare ed esportare variabili e metodi da moduli javascript.
+Questo permette di separare il codice in diversi file, importare librerie esterne solo dove servono e di condividere dati senza usare variabili con visibilità globale.
+
+Esistono due tipi di Export: export con nome e export di default. Ogni file può avere **un solo** export di default, ed un qualsiasi numero di export con nome. Di solito il valore o il metodo più importante del file si esporta come default, perché ne rende più facile l'import.
+Esempio default export
+```js
+  // lib/modulo.js
+ function metodo(x) {
+    return x + 1;
+ };
+  export default metodo;  
+```
+```js  
+  // index.js
+  import metodo from 'lib/modulo';
+  metodo(3) // output 4
+  
+  // essendo un export di default, posso specificare qualsiasi nome
+  // al momento dell'import
+  
+  import sommaUno from 'lib/modulo';
+  sommaUno(3) // output 4
+  
+```
