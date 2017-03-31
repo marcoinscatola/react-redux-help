@@ -318,5 +318,42 @@ function logArguments() {
 logArguments(1,2,3,4,5) // output: [2, 3, 4, 5]
 ```
 ## <a name="apply"></a>apply
+Il metodo ```apply```  funziona in modo molto simile al metodo ```call```, permette anch'esso di chiamare un metodo specificando un valore di ```this``` e i parametri. La differenza con ```call``` è che invece di accettare i parametri separati da virgole, richiede un array contenente i parametri:
+```js
+  funzione.apply(thisValue, [param1, param2, ...])
+```
+Esempi:
+```js
+  var params  = [2, 5];
+  function mult(a,b) {
+    return a*b;
+  }
+  mult.apply(null, params) // ouput: 10
+```
 
+```js
+  // esempio ridottissimo di un sistema ad eventi
+  var eventSystem = {
+    handlers: [],
+    registerHandler: function(handler) {
+      this.handlers.push(handler);
+    },
+    trigger: function() {
+      var args = arguments;
+      this.handlers.forEach(function(handler) {
+        handler.apply(null, args);
+      })
+    }
+  }
+  eventSystem.registerHandler(function(a,b) {
+    console.log(a + b);
+  });
+  eventSystem.registerHandler(function(c,d) {
+    console.log(c * d);
+  });
+  eventSystem.trigger(5,10);
+  // output: 
+  // 15
+  // 50
+```
 ## <a name="bind"></a>bind
