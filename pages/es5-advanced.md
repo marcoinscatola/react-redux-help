@@ -4,6 +4,7 @@ Rivediamo velocemente alcuni metodi javascript molto utili che diventeranno part
   - [map](#map)
   - [reduce](#reduce)
   - [forEach](#forEach)  
+  - [ES6](#es6)
 - [Operazioni sulle funzioni](#funcops)
   - [call](#call)
   - [apply](#apply)
@@ -176,7 +177,8 @@ Esempi:
   
   var conteggioParole = parole.reduce(conta, {}); // il valore iniziale è un oggetto vuoto
   console.log(conteggioParole) // {cane: 3, gatto: 1, pesce: 2, lupo: 1, corvo: 1}
-  
+```
+```js  
   // es: indicizzare un array di oggetti in un dizionario secondo un determinato parametro
   var dati = [
     {id: "a1", value: 1, active: true},
@@ -198,7 +200,8 @@ Esempi:
     b1: {id: "b1", value: 7, active: true}
   }
   */
-  
+```
+```js
   // es: 'appiattire' un array di array
   var arr2d = [ [1, 2], [3, 4, 5], [6] ];
   function flat (arr, el) {
@@ -233,7 +236,49 @@ Esempio:
     1490965265932
   */
 ```
+## <a name="es6"></a>ES6
+Con l'introduzione del nuovo standard **ECMAScript 6** e in particolare delle [arrow function](es6-basics.md#arrows) si può ottenere una leggibilità ancora migliore nei metodi ```map```, ```reduce``` e ```filter```.
+Esempi:
+```js
+  // estrarre un dato da un array di oggetti
+  var persone = [
+    {nome:"Carlo", cognome: "Camusso"}, 
+    {nome:"Riccardo", cognome: "Genova"}, 
+    {nome:"Marco", cognome:"Lepore"},
+    {nome:"Laura", cognome:"Camusso"},
+    {nome:"Antonio", cognome:"Tramontana"},
+  ]
+  var nomi = persone.map(persona => persona.nome);
+```
+
+```js
+  // calcolare la somma di tutti gli anni pari fino ad oggi
+  
+  // questa funzione ritorna un array con tutti gli anni dal parametro fino a 0
+  function generaAnni(annoCorrente) {
+    if (annoCorrente === 0) return [];
+    return [annoCorrente].concat(generaAnni(annoCorrente-1))
+  } 
+  var sommaAnniPari= generaAnni(2017).filter(n => n % 2 === 0).reduce( (tot, anno) => tot + anno)
+```
+
+
+```js
+  // eliminare gli spazi in una frase e cifrarla cambiando ogni lettera con la successiva
+  
+  var frase = "Oggi Carlo ha chiesto a Riccardo di centrare una scritta verticalmente";
+  var fraseCifrata = frase.split("") // crea un array di caratteri a partire dalla stringa
+    .filter(c => c !== " ") // ignora gli spazi
+    .map(c => String.fromCharCode(c.charCodeAt(0)+1) ) // sostituisce ogni carattere con la lettera successiva
+    .join("") // unisce nuovamente l'array in una stringa
+    
+  console.log(fraseCifrata) // "PhhjDbsmpibdijftupbSjddbsepejdfousbsfvobtdsjuubwfsujdbmnfouf"
+```
+
+
 # <a name="funcops"></a>Operazioni sulle funzioni
+Di seguito alcuni metodi fondamentali per poter utilizzare all 100% le funzioni in javascript, senza soprese inaspettate.
 ## <a name="call"></a>call
+Il metodo ```call``` permette di chiamare una funzione, specificando di seguito il valore di ```this``` e dei parametri con cui chiamare la funzione.
 ## <a name="apply"></a>apply
 ## <a name="bind"></a>bind
