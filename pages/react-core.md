@@ -16,7 +16,7 @@ Viene chiamato automaticamente subito dopo che il componente è stato aggiunto a
     }
 ```
 - render  
-Viene chiamato ogni volta che React decide che il componente deve essere aggiornato. Deve ritornare l'html che corrisponde a quel componente. Anche se tecnicamente è possibile scrivere l'html attraverso i metodi React.createElement e React.createComponent, l'unico metodo 'sano' per ritornare qualcosa di leggibile è di usare JSX, che permette di usare una sintassi simile a HTML all'interno di un metodo javascript (vedi paragrafo più avanti)
+Viene chiamato ogni volta che React decide che il componente deve essere aggiornato. Deve ritornare l'html che corrisponde a quel componente. Anche se tecnicamente è possibile scrivere l'html attraverso i metodi React.createElement e React.createComponent, il metodo migliore per ritornare qualcosa di leggibile è di usare JSX, che permette di usare una sintassi simile a HTML all'interno di un metodo javascript (vedi paragrafo più avanti)
 ```jsx
     render() {
         return (
