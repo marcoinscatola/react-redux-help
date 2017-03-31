@@ -307,7 +307,15 @@ var obj2 = {
 
 obj.getName(); // "Mario"
 obj.getName.call(obj2); // "Nicola"
-
+```
+Un possibile caso d'uso di ```call``` è quando abbiamo bisogno di applicare un metodo di un prototipo ad un oggetto che non eredita quel prototipo. Un esempio comune è quando si ha necessità di usare il metodo ```slice``` di ```Array.prototype``` sugli ```arguments``` all'interno di una funzione. ```arguments``` è un oggetto iterabile e si comporta in gran parte come un array, ma non ha il metodo ```slice```. E' possibile usare ```call``` in questo modo:
+```js
+// stampa in console un array contenente i parametri passati alla funzione, eccetto il primo
+function logArguments() {
+  var argsExceptFirst = Array.prototype.slice.call(arguments, 1)
+  console.log(argsExceptFirst);
+}
+logArguments(1,2,3,4,5) // output: [2, 3, 4, 5]
 ```
 ## <a name="apply"></a>apply
 
