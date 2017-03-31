@@ -254,11 +254,12 @@ Esempi:
 ```js
   // calcolare la somma di tutti gli anni pari fino ad oggi
   
-  // questa funzione ritorna un array con tutti gli anni dal parametro fino a 0
+  // questa funzione ritorna un array con tutti gli anni da annoCorrente fino a 0
   function generaAnni(annoCorrente) {
     if (annoCorrente === 0) return [];
     return [annoCorrente].concat(generaAnni(annoCorrente-1))
   } 
+  
   var sommaAnniPari= generaAnni(2017).filter(n => n % 2 === 0).reduce( (tot, anno) => tot + anno)
 ```
 
