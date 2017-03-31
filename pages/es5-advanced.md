@@ -122,6 +122,7 @@ Esempi:
     }
   }
   function formattaNome(persona) { return persona.nome + " " + persona.cognome };
+  
   var natiPrimaDel1980 = persone.filter(natoPrimaDel(1970)).map(formattaNome);
   console.log(natiPrimaDel1980) // ["Mastro Lindo", "Susanna Tuttapanna"]
 ```
