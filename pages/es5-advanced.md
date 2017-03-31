@@ -1,9 +1,9 @@
 Rivediamo velocemente alcuni metodi javascript molto utili che diventeranno particolarmente importanti nella gestione dei dati utilizzando framework e architetture moderne.
 - [Manipolazione array](#array)
   - [filter](#filter)
-  - [forEach](#forEach)
   - [map](#map)
   - [reduce](#reduce)
+  - [forEach](#forEach)  
 - [Operazioni sulle funzioni](#funcops)
   - [call](#call)
   - [apply](#apply)
@@ -208,7 +208,31 @@ Esempi:
   console.log(flatArray) // [1, 2, 3, 4, 5, 6]
 ```
 ## <a name="forEach"></a>forEach
-
+Il metodo ```forEach``` può sostituire il classico ciclo for nel caso sia necessario eseguire una serie di operazioni prendendo in esame tutti gli elementi di un array. La differenza principale di forEach rispetto a ```map```, ```filter``` e ```reduce``` è di non avere un valore di ritorno.  
+Se ho bisogno di ottenere un qualche tipo di valore di ritorno trasformando o lavorando in qualche modo un array, è più sintatticamente corretto usare uno degli altri operatori.  
+Alcuni casi d'uso possono essere funzioni di logging o funzioni che chiamano il server per ogni elemento di un array (solo se non ci interessa il valore di ritorno, altrimenti un map è più indicato)
+La sintassi è la seguente:
+```
+array.forEach(funzione);
+```
+Dove funzione viene chiamata per ogni elemento dell'array, ricevendo come parametri l'elemento corrente, l'indice dell'elemento e l'array completo.
+Esempio:
+```js
+  var events = [ 
+    {type:"click", timestamp: 1490965455518}, 
+    {type:"click", timestamp: 1490965465722}, 
+    {type:"click", timestamp: 1490965265932}
+  ]
+  function logEventTime(event) {
+    console.log(event.timestamp)
+  }
+  events.forEach(logEventTime);
+  /* output:
+    1490965455518
+    1490965465722
+    1490965265932
+  */
+```
 # <a name="funcops"></a>Operazioni sulle funzioni
 ## <a name="call"></a>call
 ## <a name="apply"></a>apply
