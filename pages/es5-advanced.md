@@ -356,4 +356,20 @@ Esempi:
   // 15
   // 50
 ```
+Un altro caso in cui ```apply``` torna utile è quando è necessario sostituire un metodo preesistente (o un metodo nativo javascript) aggiungendo qualche tipo di funzionalità all'implementazione originale
+```js
+// aggiunge un console.log all'esecuzione di ogni window.open
+
+// salvo un riferimento al metodo in una variabile
+var originalOpen = window.open; 
+// sovrascrivo window.open con la mia implementazione
+window.open = function(){
+  // il primo parametro è l'url, lo stampo in console
+  var url = arguments[0];
+  console.log("Opening url: ", url);
+  // eseguo il metodo window.open originale, passandogli i parametri 
+  // con cui è stato chiamato il nuovo metodo window.open
+  originalOpen.apply(this, arguments);
+}
+```
 ## <a name="bind"></a>bind
