@@ -391,3 +391,42 @@ somma3(10) // 13
 ```
 ```bind``` risulta estremamente utile nel caso di funzioni da associare ad eventi o a callback di funzioni asincrone.  
 Nel caso degli eventi, internamente la funzione passata a ```addEventListener``` o a ```$().on``` viene eseguita nel contesto del target dell'evento. Ad esempio il valore di ```this``` all'interno di un evento di click è l'elemento del DOM che è stato clickato. A volte questo comportamento non è desiderabile perché si vuole mantenere il contesto originale.
+```js
+var clickCounter = {
+  clicked: 0,
+  addClick: function(e) {
+    this.clicked++;
+  }
+}
+
+// esempio NON CORRETTO:
+document.body.addEventListener("click", clickCounter.addClick);
+// click 4 volte 
+console.log(clickCounter.clicked) // 0
+// il valore di this all'interno di addClick viene 
+// sostituito nel momento in cui usiamo .addEventListener
+
+// esempio CORRETTO:
+document.body.addEventListener("click", clickCounter.addClick.bind(clickCounter));
+// oppure
+var boundAddClick = clickCounter.addClick.bind(clickCounter);
+document.body.addEventListener("click", boundAddClick);
+// click 4 volte
+console.log(clickCounter.clicked) // 4
+```
+Lo stesso problema si ha con la maggior parte delle implementazioni dei metodi asincroni. Ad esempio i callback associati ad  ```$.ajax()``` vengono eseguiti automaticamente nel contesto (```this```) della risposta ricevuta dal server. Se vogliamo mantenere il contesto originale del metodo possiamo usare ```bind```
+```js
+  var loader = {
+    loading: false,
+    setLoading: function(bool) {
+      this.loading = bool;
+    },
+    loadComplete: function() {
+      this.setLoading(false);
+    },
+    getData: function() {
+      $.ajax(...)
+      .then(this.loadComplete)
+    }
+  }
+```
