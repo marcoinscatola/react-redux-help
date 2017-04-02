@@ -424,9 +424,36 @@ Lo stesso problema si ha con la maggior parte delle implementazioni dei metodi a
     loadComplete: function() {
       this.setLoading(false);
     },
-    getData: function() {
-      $.ajax(...)
-      .then(this.loadComplete)
-    }
+    // la funzione bindMethods sostituisce setLoading e 
+    // loadComplete con funzioni dove this è sempre uguale a loader 
+    bindMethods: function() {
+      this.setLoading = this.setLoading.bind(this);
+      this.loadComplete = this.loadComplete.bind(this);
   }
+  
+  function getData() {
+    return $.ajax({
+      url: "http://www.example.com/api",
+      type: "GET"
+    })
+  }
+  
+  loader.setLoading(true);
+  getData().then(loader.loadComplete) // Error: this.setLoading is not a function
+  // va in errore perché il valore di this è stato cambiato da .then()
+  
+  loader.bindMethods(); 
+  getData().then(loader.loadComplete) 
+  // funziona correttamente e imposta il valore di loader.loading su false
 ```
+Un altro esempio potrebbe essere la creazione di comandi di log personalizzati. I vari ```console.log```, ```console.warn``` etc normalmente sono eseguiti nel contesto ```console```. Se provo ad assegnare un metodo di console ad una variabile e a chiamarlo, ottengo un errore:
+```js
+  var log = console.log;
+  log("test") // error
+  ```
+  (N.B. questo non succede più nelle ultime versioni di chrome, dove i metodi di consoe sono automaticamente legati alla console)  
+  La creazione di un metodo di log personalizzato potrebbe essere realizzata così:
+  ```js
+  var logTime = console.log.bind(console, "Time: ");
+  logTime(10) // ouput in console: Time: 10
+  ```
