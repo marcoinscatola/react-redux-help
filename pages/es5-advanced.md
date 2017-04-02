@@ -373,3 +373,21 @@ window.open = function(){
 }
 ```
 ## <a name="bind"></a>bind
+Il metodo ```bind``` serve a creare una nuova funzione specificando il contesto e i parametri con cui verrà chiamata. A differenza di ```call``` e ```bind``` non esegue la funzione ma si limita a ritornarla.  
+Sintassi:
+```js
+  var funzioneBound = funzione.bind(thisValue, param1, param2, ...)
+```
+Esempio: 
+```js
+function somma(a,b) {
+  return a + b;
+}
+var somma3 = somma.bind(null, 3) // in somma3 this = null, a = 3
+// il valore 3 viene legato al parametro a, somma3 accetta 
+// quindi solo il parametro b
+somma(10,20) // 30
+somma3(10) // 13
+```
+```bind``` risulta estremamente utile nel caso di funzioni da associare ad eventi o a callback di funzioni asincrone.  
+Nel caso degli eventi, internamente la funzione passata a ```addEventListener``` o a ```$().on``` viene eseguita nel contesto del target dell'evento. Ad esempio il valore di ```this``` all'interno di un evento di click è l'elemento del DOM che è stato clickato. A volte questo comportamento non è desiderabile perché si vuole mantenere il contesto originale.
