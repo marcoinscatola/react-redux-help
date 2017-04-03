@@ -1,7 +1,7 @@
 - [Higher-Order Components (HOC)](#hoc)
 
 ## <a name="hoc"></a>Higher-Order Components
-Un Higher-Order Component (componente di ordine superiore, spesso abbreviato in HOC) è concettualmente molto simile alla [funzione di ordine superiore](/es5-advanced.md#functor).  
+Un Higher-Order Component (componente di ordine superiore, spesso abbreviato in HOC) è concettualmente molto simile alla [funzione di ordine superiore](es5-advanced.md#functor).  
 Come la funzione di ordine superiore è una funzione che prende tra i parametri una funzione e ritorna una nuova funzione, un componente di ordine superiore è una funzione che prende tra i parametri un componente e ne ritorna uno nuovo, implementando qualche funzionalità.  
 Gli HOC sono il modo migliore per creare comportamenti o funzionalità che abbiamo bisogno di utilizzare su più componenti.  
 Ad esempio poniamo di voler costruire un HOC che permette di nascondere il componente se gli viene passata la proprietà ```hidden```:
@@ -63,4 +63,4 @@ Una volta impostato possiamo richiamare il nostro componente di Test e reagirà 
   }
 ```
 Una volta creato un HOC si può applicare allo stesso modo a diversi componenti, riducendo il codice duplicato.  
-Come con le funzioni di ordine superiore, i componenti di ordine superiore si possono comporre nel caso si abbia necessità di applicarne più di uno ad un singolo componente. La sintassi è identica a quella vista in [funzioni di ordine superiore](/es5-advanced.md#functor).  
+Come con le funzioni di ordine superiore, i componenti di ordine superiore si possono comporre nel caso si abbia necessità di applicarne più di uno ad un singolo componente. La sintassi è identica a quella vista in [funzioni di ordine superiore](es5-advanced.md#functor).  
