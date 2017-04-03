@@ -6,6 +6,6 @@ Guide sui principi base di react e redux, per uso interno
   - [Sintassi ES6](pages/es6-basics.md)
 ## React
   - [Principi generali](pages/react-core.md)
-  - [Avanzate (Work in progress)](pages/react-advanced.md)
+  - [Avanzate](pages/react-advanced.md)
 ## Redux
   - [Principi generali (Work in progress)](pages/redux-basics.md)
