@@ -8,9 +8,9 @@ A prescindere che si voglia utilizzare o meno la sintassi che segue, è importan
 - [Arrow Functions](#arrows)
 - [Spread e rest operator](#spreadrest)
 - [Destructuring](#destruct)
-- [Import/Export](#importexport)
+- [Nomi di proprietà computate](#computed)
 - [Template](#template)
-
+- [Import/Export](#importexport)
 ## <a name="default"></a>Parametri con valori predefiniti
 Permette di specificare un valore di default per un parametro di una funzione, scrivendolo nel formato ```nomeParametro=valoreDefault```
 ```js
@@ -388,6 +388,13 @@ let handleAction = ({type, payload, meta={} }) => {
 handleAction(action)
 ```
 
+## <a name="computed"></a>Nomi di proprietà computate
+Da scrivere
+
+
+## <a name="template"></a>Template
+Da scrivere
+
 
 ## <a name="importexport"></a>Import / Export
 Import e Export permettono rispettivamente di importare ed esportare variabili e metodi da moduli javascript.
@@ -480,5 +487,3 @@ mod.val2 === 20 // true
 mod.text === "Testo" // true
 ```
 
-## <a name="template"></a>Template
-Da scrivere
