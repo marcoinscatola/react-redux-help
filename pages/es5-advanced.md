@@ -486,7 +486,7 @@ var makeDelayed = function(fn, delay) {
       // esegue la funzione originale con un delay
       setTimeout(function() {
         // all'esecuzione salva il valore della funzione originale
-        var res = fn.apply(fn, args);
+        var res = fn.apply(this, args);
         // risolve la Promise con quel valore
         resolve(res);
       }, delay);
@@ -511,4 +511,72 @@ var loggableDelayedSomma = makeDelayed(makeLoggable(somma, "Somma: "), 1000)
 loggableDelayedSomma(5, 10)
 // esegue la funzione dopo 1 secondo e in console scrive "Somma: 15"
 ```
-Come si vede nell'ultimo esempio, combinare più funzioni di ordine superiore è possibile ma la sintassi può diventare complicata. Un modo per aggirare questo problema è di creare funzioni che accettano parametri di configurazione e ritornano funzioni di ordine superiore (suona complicato lo so, esempio a seguire)
+Come si vede nell'ultimo esempio, combinare più funzioni di ordine superiore è possibile ma la sintassi può diventare complicata. Un modo per aggirare questo problema è di creare funzioni che accettano parametri di configurazione e ritornano funzioni di ordine superiore. Spiegarlo a parole è più complicato che vederlo in azione: 
+```js
+  function somma(a, b) {
+    return a + b;
+  }
+
+  // il generatore di funzione di ordine superiore prende come parametri 
+  // la configurazione, in questo caso il parametro prefix
+  var makeLoggable = function(prefix) {
+    // ritorna una funzione di ordine superiore che prende come 
+    // parametro la funzione da modificare
+    return function(fn) {
+      // da qui in poi funziona come nell'esempio precedente
+      return function() {
+        var res = fn.apply(this, arguments);
+        console.log(prefix, res);
+        return res;
+      }
+    }
+  }
+  
+  // si usa in questo modo
+  var loggableSomma = makeLoggable("Somma: ")(somma);
+  
+  // la prossima funzione di ordine superiore non prende configurazione, 
+  // ma possiamo comunque decidere di usare un generatore per 
+  // mantenere la stessa struttura
+  var makeMeasurable = function() {
+    return function(fn) {
+      return function() {
+        var t = Date.now();
+        var res = fn.apply(fn, arguments);
+        var elapsed = Date.now() - t;
+        console.log("Tempo di esecuzione: " + elapsed + "ms");
+        return res;
+      }
+    }
+  }
+  
+  var measurableSomma = makeMeasurable()(somma);
+  measurableSomma(10,20) 
+  // scrive in console Tempo di esecuzione Xms (molto probabilmente 0ms)
+  // e ritorna 30
+```
+Il vantaggio di questa struttura si vede nel momento in cui vogliamo combinare più funzioni in una sola, approfittando di metodi come `compose` disponibili in varie librerie (lodash, underscore, etc). ```compose``` prende tante funzioni come parametri e restituisce una funzione che esegue consecutivamente le funzioni ricevute (partendo dall'ultima) applicando ogni volta la funzione successiva sul valore di ritorno della funzione precedente.  
+Esempio di compose:
+```js
+function uppercase(str) { return str.toUpperCase() }
+function reverse(str) { return str.split("").reverse().join("") }
+var f = compose(reverse, uppercase);
+f("Test stringa da modificare"); // "ERACIFIDOM AD AGNIRTS TSET"
+```
+Ora andiamo ad usare ```compose``` con i generatori di funzione di ordine superiore creati nell'esempio precedente:
+```js
+  var enhance = compose(
+    makeLoggable("Somma: "),
+    makeMeasurable()
+  )
+  var enhancedSomma = enhance(somma);
+  enhancedSomma(10,20);
+  /*
+    scrive in console:
+    
+    Tempo di esecuzione: 0ms
+    Somma:  30
+    
+    e ritorna il valore 30
+  */
+```
