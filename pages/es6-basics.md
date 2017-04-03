@@ -393,7 +393,80 @@ Da scrivere
 
 
 ## <a name="template"></a>Template
-Da scrivere
+I template sono una modalità avanzata di gestione delle stringhe. Permettono di scrivere stringhe multilinea e di inserire variabili nel testo in maniera molto più semplice rispetto alla gestione tradizionale.  
+I template sono delimitati dal carattere *backtick* (\`), che su OSX è ottenibile con la combinazione alt+\.  
+Esempio: 
+```js
+// sintassi ES6
+let str = `Questa è una 
+stringa 
+multilinea`;
+
+// sintassi ES5
+var str = "Questa è una\n stringa\n multilinea";
+// oppure volendola scrivere su più righe per leggibilità
+var str = "Questa è una\n"+
+"stringa\n"+
+"multilinea";
+```
+Per inserire variabili o altro codice javascript all'interno del testo si usa la sintassi ```${}```, ad esempio:  
+```js
+// sintassi ES6
+let username = "Darth Vader"
+let benvenuto = "Benvenuto, ${username}!"
+console.log(benvenuto) // Benvenuto, Darth Vader!
+
+// sintassi ES5
+var username = "Anakin Skywalker"
+var benvenuto = "Benvenuto, " + username + "!";
+```
+Un altro esempio un po' più complesso.
+```js
+// sintassi ES6
+let active = false;
+let info = `Data: ${new Date().toLocaleString()}
+Il tuo account ${active?'è attivo':'non è attivo'}. 
+Ti auguriamo una buona giornata!`
+
+console.log(info) 
+/*
+Data: 3/4/2017, 11:07:45
+Il tuo account non è attivo. 
+Ti auguriamo una buona giornata!
+*/
+
+// sintassi ES5
+var active = false;
+var info = "Data: " + new Date().toLocaleString() + "\n" +
+"Il tuo account " + (active?'è attivo':'non è attivo') + ". \n" +
+"Ti auguriamo una buona giornata!"
+```
+
+E' utile sapere che apporre un template dopo il nome di una funzione chiama automaticamente la funzione passandogli come parametri i vari elementi del template (un array delle parte statiche e un array delle parti dinamiche).  
+Anche se raramente andremo a usare questa tecnica, alcune librerie ne fanno uso per permettere allo sviluppatore di scrivere liberamente un qualche tipo di sintassi e convertirla internamente in altro codice.  
+Un esempio è la libreria styled-components per React:
+```js
+// libreria styled-components
+import styled from 'styled-components';
+
+// Immaginiamo di avere dei file .js nella cartella style
+// con variabili contenenti informazioni sulla tipografia,
+// colori dell'app, dimensioni standard del padding etc
+import font from 'style/font'; 
+import layout from 'style/layout';
+
+var styledDiv = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: ${layout.paddingBase}px;
+  color: ${font.mainColor};
+  font-size: ${font.big}
+`
+
+// in styledDiv avrò un componente react corrispondente ad
+// un elemento DIV con applicato lo stile specificato
+```
 
 
 ## <a name="importexport"></a>Import / Export
