@@ -9,7 +9,7 @@ Rivediamo velocemente alcuni metodi javascript molto utili che diventeranno part
   - [call](#call)
   - [apply](#apply)
   - [bind](#bind)
-
+  - [Higher-Order Function](#functor)
 
 # <a name="array"></a>Manipolazione array
 Di seguito alcuni metodi nativi degli array javascript che forniscono un'alternativa più leggibile e più flessibile al classico ciclo ```for```.
@@ -373,7 +373,7 @@ window.open = function(){
 }
 ```
 ## <a name="bind"></a>bind
-Il metodo ```bind``` serve a creare una nuova funzione specificando il contesto e i parametri con cui verrà chiamata. A differenza di ```call``` e ```bind``` non esegue la funzione ma si limita a ritornarla.  
+Il metodo ```bind``` serve a creare una nuova funzione specificando il contesto e i parametri con cui verrà chiamata. A differenza di ```call``` e ```apply``` non esegue la funzione ma si limita a ritornarla.  
 Sintassi:
 ```js
   var funzioneBound = funzione.bind(thisValue, param1, param2, ...)
@@ -457,3 +457,58 @@ Un altro esempio potrebbe essere la creazione di comandi di log personalizzati. 
   var logTime = console.log.bind(console, "Time: ");
   logTime(10) // ouput in console: Time: 10
   ```
+## <a name="functor"></a>Higher-Order Function
+Si definisce Higher-Order Function (funzione di ordine superiore) una funzione che prende tra i suoi parametri almeno una funzione e ha come valore di ritorno una nuova funzione. Le funzioni di ordine superiore vengono usate per aggiungere funzionalità a funzioni esistenti.  
+Esempi: 
+```js
+var makeLoggable = function(fn, prefix) {
+  prefix = prefix || "";
+  // ritorna una funzione
+  return function() {
+    // la funzione ritornata quando chiamata esegue
+    // la funzione originale e ne assegna il risultato
+    // alla variabile res
+    var res = fn.apply(this, arguments);
+    // viene eseguito un console.log con il risultato
+    // e l'eventuale prefisso specificato in prefix
+    console.log(prefix, res);
+    // viene ritornato il valore originale
+    return res;
+  }
+}
+var makeDelayed = function(fn, delay) {
+  // ritorna una funzione
+  return function() {
+    // salva i parametri con cui è chiamata la funzione
+    var args = arguments;
+    // ritorna una Promise che autoesegue la funzione interna
+    return new Promise(function(resolve) {
+      // esegue la funzione originale con un delay
+      setTimeout(function() {
+        // all'esecuzione salva il valore della funzione originale
+        var res = fn.apply(fn, args);
+        // risolve la Promise con quel valore
+        resolve(res);
+      }, delay);
+    })
+  }
+}
+function somma(a, b) {
+  return a + b;  
+}
+
+var loggableSomma = makeLoggable(somma, "Somma:");
+
+var delayedSomma = makeDelayed(somma, 1000);
+
+somma(5, 10) // ritorna 15
+loggableSomma(5, 10) // ritorna 15 e scrive in console "Somma: 15"
+delayedSomma(5, 10) // esegue somma dopo 1 secondo e ritorna una 
+                    // promise che sarà risolta con il valore 15
+
+// è possibile unire i due comportamenti in un unica funzione
+var loggableDelayedSomma = makeDelayed(makeLoggable(somma, "Somma: "), 1000)
+loggableDelayedSomma(5, 10)
+// esegue la funzione dopo 1 secondo e in console scrive "Somma: 15"
+```
+Come si vede nell'ultimo esempio, combinare più funzioni di ordine superiore è possibile ma la sintassi può diventare complicata. Un modo per aggirare questo problema è di creare funzioni che accettano parametri di configurazione e ritornano funzioni di ordine superiore (suona complicato lo so, esempio a seguire)
