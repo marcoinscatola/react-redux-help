@@ -389,8 +389,27 @@ handleAction(action)
 ```
 
 ## <a name="computed"></a>Nomi di proprietà computate
-Da scrivere
+In ES6 è possibile definire il nome di una proprietà di un oggetto in maniera dinamica anche al momento della dichiarazione dell'oggetto stesso. La sintassi è simile all'accesso dinamico alle proprietà di un oggetto (```obj[prop]```).  
+Esempio: 
+```js
+// sintassi ES6
+let base = "propNum";
+let obj = {
+  [base + 1]: 10,
+  [base + 2]: 20,
+  [base + 3]: 30
+}
+console.log(obj) // {propNum1: 10, propNum2: 20, propNum3: 30}
 
+// sintassi ES5
+// in ES5 non è possibile dichiarare una proprietà dinamica contestualmente
+// all'inizializzazione di un oggetto. E' necessario creare prima l'oggetto
+let base = "propNum";
+var obj = {};
+obj[base + 1] = 10;
+obj[base + 2] = 20;
+obj[base + 3] = 30;
+```
 
 ## <a name="template"></a>Template
 I template sono una modalità avanzata di gestione delle stringhe. Permettono di scrivere stringhe multilinea e di inserire variabili nel testo in maniera molto più semplice rispetto alla gestione tradizionale.  
