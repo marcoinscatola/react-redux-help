@@ -8,7 +8,7 @@
 ## <a name="principi"></a>Principi Generali
 Redux è un'architettura software per sviluppare applicazioni che devono gestire stati e dati complessi riducendo al minimo la possibilità di errori da "distrazione".  
 Le idee alla base di redux sono le seguenti:
-- Tutto lo stato dell'applicazione risiede in un unico oggetto, con struttura ad albero
+- Tutto lo stato dell'applicazione risiede in un unico oggetto, con struttura ad albero. Questo oggetto è read-only.
 - L'unico modo per cambiare lo stato dell'applicazione consiste nell'emettere una *action*. Un'*action* è un semplice oggetto javascript che contiene il tipo di azione eseguita ed eventuali parametri con cui è stata eseguita.
 - le *action* una volta emesse vengono elaborate dai *reducer*, funzioni pure che prendono come parametri lo stato dell'applicazione e l'azione emessa, e restituiscono in output il nuovo stato.  
 In pratica ad azioni dell'utente e alle comunicazioni con il server corrisponderanno delle *action*, e si andranno a scrivere dei *reducer* che definiscono come si comporta l'applicazione all'occorrenza di ogni action.
@@ -75,7 +75,7 @@ I reducer hanno le seguenti caratteristiche:
 
 Un esempio di reducer che cambia il valore di una variabile in base al tipo di action emessa:
 ```js
-var initialState = { 
+const initialState = { 
   altriValori: "Test",
   documentiAperti: 0 
 }
@@ -122,6 +122,57 @@ state = reducer(state, closeDocument())
 // in questo momento state === { altriValori: "Test", documentiAperti: 0 }
 // Attenzione: state !== initialState, perché è sempre stato ritornato un nuovo oggetto
 ```
+Idealmente andremo a riorganizzare il codice separando i reducer in diverse funzioni e utilizzando costanti per le tipologie di actions, in modo da avere qualcosa di più leggibile:
+```js
+const initialState = { 
+  altriValori: "Test",
+  documentiAperti: 0 
+}
+// action constant
+const OPEN_DOCUMENT = "OPEN_DOCUMENT", 
+      CLOSE_DOCUMENT = "CLOSE_DOCUMENT";
+
+// action generator
+function openDocument() {
+  return { type: OPEN_DOCUMENT };
+}
+function closeDocument() {
+  return { type: CLOSE_DOCUMENT };
+}
+
+// reducer
+function openDocumentReducer(state, action) {
+  return {
+    ...state,
+    documentiAperti: state.documentiAperti + 1
+  }
+}
+
+function closeDocumentReducer(state, action) {
+  return {
+    ...state,
+    documentiAperti: state.documentiAperti - 1
+  }
+}
+
+function reducer(state=initialState, action) {
+  switch(action.type) {
+    case OPEN_DOCUMENT: 
+      return openDocumentReducer(state, action);
+    case CLOSE_DOCUMENT:  
+      return closeDocumentReducer(state, action);
+    default:
+      return state;
+  }
+}
+```
+#### Vantaggi
+Il vantaggio principale dei reducer deriva dagli stessi limiti che impongono: **dati gli stessi parametri in input ritornano sempre lo stesso valore**.  
+Questo ha conseguenze importanti:
+- I reducer sono testabili: visto che a parità di stato e action un reducer deve ritornare sempre lo stesso valore, è possibile scrivere test automatizzati che verificano il comportamento dei reducer.
+- Dato uno stato di partenza e una serie di action è possibile ricostruire la storia dello stato dell'applicazione in seguito a quelle modifiche. Ciò permette di riprodurre bug con su macchine diverse dall'originale, automatizzare processi test sull'interfaccia, etc
+- Mantenendo in memoria la serie di actions eseguite, è possibile ricalcolare lo stato attuale escludendo alcune di esse o riapplicandole all'occorrenza. In questo modo è possibile implementare funzioni di undo/redo senza effettuare grosse modifiche.
+- Si è obbligati a separare la logica di business dalle interazioni con il server e con l'utente, creando codice più pulito e riutilizzabile.
 ## <a name="store"></a>Store
 ## <a name="recap"></a>Come funzionano insieme
 ## <a name="reactredux"></a>react-redux
