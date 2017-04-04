@@ -9,6 +9,7 @@ A prescindere che si voglia utilizzare o meno la sintassi che segue, è importan
 - [Spread e rest operator](#spreadrest)
 - [Destructuring](#destruct)
 - [Nomi di proprietà computate](#computed)
+- [Dichiarazioni abbreviate](#shorthand)
 - [Template](#template)
 - [Import/Export](#importexport)
 ## <a name="default"></a>Parametri con valori predefiniti
@@ -409,6 +410,37 @@ var obj = {};
 obj[base + 1] = 10;
 obj[base + 2] = 20;
 obj[base + 3] = 30;
+```
+
+## <a name="shorthand"></a>Dichiarazioni abbreviate
+In ES6 è possibile usare una sintassi abbreviata per definire proprietà e metodi di un oggetto nella sua dichiarazione.  
+Esempio:
+```js
+// sintassi ES6
+let prop = 1, text = "Test", val = false;
+// posso dichiarare le proprietà scrivendo solo il nome della
+// variabile contenente il valore, e i metodi senza specificare function
+var obj = {
+  prop,
+  text,
+  val,
+  method() {
+    return this.text + this.prop
+  }
+}
+
+obj.method() // ritorna Test1
+
+// sintassi ES5
+var prop = 1, text = "Test", val = false;
+var obj = {
+  prop: prop,
+  text: text,
+  val: val,
+  method: function() {
+    return this.text + this.prop
+  }
+}
 ```
 
 ## <a name="template"></a>Template
