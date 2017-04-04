@@ -54,7 +54,74 @@ var action = {
   }
 }
 ```
+Tecnicamente è possibile scrivere le action a mano, ma è quasi sempre più comodo usare una funzione che le restituisca già pronte:
+```js
+  function saveContatto(datiContatto) {
+    return {
+      type: "SAVE_CONTATTO",
+      payload: datiContatto
+    }
+  }
+```
 ## <a name="reducers"></a>Reducers
+I reducer contengono la logica dell'applicazione e descrivono come lo stato dell'applicazione varia in seguito ad ogni azione.  
+I reducer hanno le seguenti caratteristiche:
+- Prendono come parametro lo stato dell'applicazione e un action, e ritornano il nuovo stato dell'applicazione. Si chiamano reducer perché hanno la stessa struttura di una funzione accettata dal metodo [Array.prototype.reduce](es5-advanced.md#reduce)
+- Sono funzioni pure, ovvero :
+  - non modificano e non referenziano variabili al di fuori del proprio scope, e non modificano i parametri che hanno ricevuto (ovvero non hanno *side-effects*)
+  - non chiamano API
+  - non usano funzioni che a loro volta hanno *side-effects* (es: new Date()) 
+  - **dati gli stessi parametri in input, restituiscono sempre lo stesso output**  
+
+Un esempio di reducer che cambia il valore di una variabile in base al tipo di action emessa:
+```js
+var initialState = { 
+  altriValori: "Test",
+  documentiAperti: 0 
+}
+
+// se il primo parametro è undefined usa lo stato iniziale dichiarato prima
+function reducer(state=initialState, action) {
+  if (action.type == "OPEN_DOCUMENT") {
+    // se l'action è di tipo OPEN_DOCUMENT ritorna un nuovo
+    // stato con la variabile documentiAperti incrementata di 1
+    return {
+      ...state,
+      documentiAperti: state.documentiAperti + 1
+    }
+  }
+  else if (action.type == "CLOSE_DOCUMENT") {
+    // se l'action è di tipo CLOSE_DOCUMENT ritorna un nuovo
+    // stato con la variabile documentiAperti diminuita di 1
+    return {
+      ...state,
+      documentiAperti: state.documentiAperti - 1
+    }
+  }
+  else {
+    // se l'action non è nessuno dei due tipi ritorna lo stato 
+    // senza modificarlo (ovvero non gestisce l'action)
+    return state
+  }
+}
+
+// generatori di azioni
+function openDocument() {
+  return { type: "OPEN_DOCUMENT" };
+}
+function closeDocument() {
+  return { type: "CLOSE_DOCUMENT" };
+}
+
+// redux inizialmente parte con uno stato dell'applicazione = undefined
+var state = reducer() 
+// in questo momento state = initialState
+state = reducer(state, openDocument())
+// in questo momento state === { altriValori: "Test", documentiAperti: 1 }
+state = reducer(state, closeDocument())
+// in questo momento state === { altriValori: "Test", documentiAperti: 0 }
+// Attenzione: state !== initialState, perché è sempre stato ritornato un nuovo oggetto
+```
 ## <a name="store"></a>Store
 ## <a name="recap"></a>Come funzionano insieme
 ## <a name="reactredux"></a>react-redux
