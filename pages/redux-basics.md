@@ -182,7 +182,9 @@ Questo ha conseguenze importanti:
 
 #### Reducer per stati complessi
 Nel caso di applicazioni che devono gestire un grande numero di reducer e uno stato molto complesso, si renderà necessario separare i reducer in più metodi (e possibilmente in più file).  
+
 Poniamo di avere un'applicazione che mostra una lista di documenti e ha la possibilità di aprire il dettaglio del documento in una modale.  Iniziamo dal pensare alla struttura dello stato della nostra applicazione. Sappiamo che dobbiamo mostrare una lista di documenti, quindi avremo bisogno di un array o di un oggetto che ne contenga i dati. Inoltre abbiamo la possibilità di aprire e chiudere una modale (proprietà booleana) e di mostrare un documento all'interno (serve un riferimento ad un elemento della lista).  
+
 Una possibile struttura potrebbe essere questa:
 ```js
 var state = {
@@ -203,8 +205,9 @@ var state = {
   }
 }
 ```
+
 A questo punto consideriamo di che tipo di actions avremo bisogno. Sicuramente dovremo poter ricevere i dati con cui popolare la lista di documenti. Inoltre avremo bisogno di poter aprire un documento in una modale, e chiudere la modale stessa.  
-Queste potrebbero essere i generatori di actions corrispondenti:
+Questi potrebbero essere i generatori di action corrispondenti:
 ```js
   const RECEIVE_DOCUMENTS = "RECEIVE_DOCUMENTS",
         OPEN_DOCUMENT_MODAL = "OPEN_DOCUMENT_MODAL",
@@ -228,6 +231,84 @@ Queste potrebbero essere i generatori di actions corrispondenti:
     type: CLOSE_DOCUMENT_MODAL
   })
 ```
+
+Passiamo a scrivere i reducer.  Abbiamo bisogno di un reducer che gestisca la lista dei documenti, e due reducer che gestiscano l'apertura e la chiusura della modale. 
+```js
+  const initialState = {
+    documents: [],
+    modal: {
+      open: false,
+      documentID: null
+    }
+  }
+
+  function receiveDocumentsReducer(state, action) {
+    let documents = actions.payload.documents;
+    return {
+      ...state,
+      documents
+    }
+  }
+  
+  function openDocumentModalReducer(state, action) {
+    let documentID = action.payload.documentID;
+    return {
+      ...state,
+      modal: {
+        open: true,
+        documentID
+      }
+    }
+  }
+  
+  function closeDocumentModalReducer(state, action) {
+    return {
+      ...state,
+      modal: {
+        open: false,
+        documentID: null
+      }
+  }
+  
+  function reducer(state=initialState, action) {
+    switch (action.type) {
+      case RECEIVE_DOCUMENTS:
+        return receiveDocumentsReducer(state, action);
+      case OPEN_DOCUMENT_MODAL:
+        return openDocumentModalReducer(state, action);
+      case CLOSE_DOCUMENT_MODAL:
+        return closeDocumentModalReducer(state, action);
+      default: 
+        return state;
+    }
+  }
+  
+  // esempio d'uso immaginando che esistano API, 
+  // interazioni utente e un contenitore per lo stato dell'app
+  // in realtà la maggior parte di questo codice non è necessario
+  // in react-redux
+  API.getDocuments()
+  .then(documentsFromServer => {
+    let action = receiveDocuments(documents);
+    let state = App.state;
+    let newState = reducer(state, action);
+    App.setState(newState);
+  })
+  
+  DocumentList.onRowClick( clickedID => {
+    let action = openDocumentModal(clickedID);
+    let state = App.state;
+    let newState = reducer(state, action);
+    App.setState(newState);
+  })
+  
+  ModalCloseButton.onClick( () => {
+    let state = App.state;
+    let newState = reducer(state, closeDocumentModal());
+    App.setState(newState);
+  })
+```
+
 ## <a name="store"></a>Store
 ## <a name="recap"></a>Come funzionano insieme
 ## <a name="reactredux"></a>react-redux
