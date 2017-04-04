@@ -8,16 +8,52 @@
 ## <a name="principi"></a>Principi Generali
 Redux è un'architettura software per sviluppare applicazioni che devono gestire stati e dati complessi riducendo al minimo la possibilità di errori da "distrazione".  
 Le idee alla base di redux sono le seguenti:
-- Tutto lo stato dell'applicazione risiede in un unico oggetto, con struttura ad albero. Questo oggetto è read-only.
+- Tutto lo stato dell'applicazione risiede in un unico oggetto, con struttura ad albero. Questo oggetto è read-only ed è contenuto nello *store*.
 - L'unico modo per cambiare lo stato dell'applicazione consiste nell'emettere una *action*. Un'*action* è un semplice oggetto javascript che contiene il tipo di azione eseguita ed eventuali parametri con cui è stata eseguita.
 - le *action* una volta emesse vengono elaborate dai *reducer*, funzioni pure che prendono come parametri lo stato dell'applicazione e l'azione emessa, e restituiscono in output il nuovo stato.  
-In pratica ad azioni dell'utente e alle comunicazioni con il server corrisponderanno delle *action*, e si andranno a scrivere dei *reducer* che definiscono come si comporta l'applicazione all'occorrenza di ogni action.
+
+In pratica ad azioni dell'utente e alle comunicazioni con il server corrisponderanno delle *action*, e si andranno a scrivere dei *reducer* che definiscono come si comporta l'applicazione all'occorrenza di ogni action.  
+A collegare il tutto ci pensa lo store, che contiene lo stato dell'applicazione e permette di emettere *actions* e di ricevere i cambiamenti dello stato dopo ogni elaborazione.
+
+## <a name="store"></a>Store
+Lo store è creato a partire dai reducer ed espone tre metodi:
+- `dispatch`, che permette di emettere un'azione e di ottenere un nuovo stato dell'applicazione a partire dallo stato attuale e dall'action appena emessa
+- `getState`, che permette di accedere allo stato dell'applicazione
+- `subscribe`, che permette di eseguire un callback ogni volta che cambia lo stato dell'applicazione  
+Sostanzialmente si comporta come uno store nell'architettura Flux, ma in Redux esiste un unico store che contiene tutto lo stato dell'applicazione.  
+
+Per creare uno store si usa il metodo `createStore` di redux e si passano come parametro i reducer:
+```js
+// importo createStore da redux
+import {createStore} from 'redux';
+// importo i reducer che andremo a scrivere 
+// dalla cartella reducers
+import reducers from 'reducers';
+var store = createStore(reducers);
+```
+
+Per vedere come funziona lo store è necessario introdurre prima le actions e i reducer, ma per il momento possiamo riassumere il comportamento generale:
+Vari componenti dell'applicazione possono impostare dei callback sull'aggiornamento dello stato usando il metodo `subscribe`, e ottenere il nuovo stato chiamando `getState`.
+```js
+  function listener() {
+    var newState = store.getState();
+    Component.setState(newState) // logica di update del componente
+  }
+  store.subscribe(listener) // listener viene chiamata ogni volta che lo stato dell'app cambia
+```
+In corrispondenza di interazioni dell'utente o con il server verranno emesse delle *actions* attraverso il metodo `dispatch`:
+```js 
+  store.dispatch(action)
+```
+Le action emesse verranno elaborate dai reducer, ottenendo alla fine il nuovo stato dell'applicazione. Ottenuto il nuovo stato dell'applicazione verranno chiamati i callback associati in precedenza con `subscribe`, così che React possa aggiornare la visualizzazione della pagina.
 
 ## <a name="actions"></a>Actions
 Un action è un semplice oggetto javascript. L'action potenzialmente può avere qualsiasi struttura ma generalmente ci si attiene ad uno standard ([Flux Standard Action](https://github.com/acdlite/flux-standard-action), o FSA).  
 L'action come minimo deve contenere la proprietà `type` che identifica univocamente il tipo di action. Ad esempio questa è un'action valida per lo standard FSA:
 ```js
 var action = { type: "INIT_APP" }
+
+store.dispatch(action)
 ```
 Nel caso l'action contenga anche dei dati che la descrivono, vanno inseriti nella proprietà `payload`:
 ```js
@@ -29,6 +65,8 @@ var action = {
     ragSociale: "BruttureInCloud.it"
   }
 }
+
+store.dispatch(action)
 ```
 Se l'action rappresenta un errore, può essere aggiunta la proprietà `error` con valore `true`:
 ```js
@@ -39,6 +77,8 @@ var action = {
   },
   error: true
 }
+
+store.dispatch(action)
 ```
 Infine la proprietà `meta` può contenere informazioni aggiuntive che descrivono la action ma non fanno parte del payload. Ad esempio informazioni da usare nelle analytics, o proprietà che individuano una gestione particolare di quell'action (spesso in combinazione con i [middleware](#middleware)).
 ```js 
@@ -53,6 +93,8 @@ var action = {
     API: API.Documenti.caricaDocumento
   }
 }
+
+store.dispatch(action)
 ```
 Tecnicamente è possibile scrivere le action a mano, ma è quasi sempre più comodo usare una funzione che le restituisca già pronte:
 ```js
@@ -62,7 +104,16 @@ Tecnicamente è possibile scrivere le action a mano, ma è quasi sempre più com
       payload: datiContatto
     }
   }
+  
+  // diventa più comodo usare dispatch più volte sulla stessa 
+  // action con parametri diversi
+  var datiContatto = { nome: "Daniel", cognome: "Rats" }
+  store.dispatch(saveContatto(datiContatto))
+  
+  var datiContatto2 = { nome: "Danieru", cognome: "Nezumi" }
+  store.dispatch(saveContatto(datiContatto2))
 ```
+
 ## <a name="reducers"></a>Reducers
 I reducer contengono la logica dell'applicazione e descrivono come lo stato dell'applicazione varia in seguito ad ogni azione.  
 I reducer hanno le seguenti caratteristiche:
@@ -112,6 +163,9 @@ function openDocument() {
 function closeDocument() {
   return { type: "CLOSE_DOCUMENT" };
 }
+
+// esempio d'uso - attenzione è solo un esempio. Nella pratica 
+// si occupa redux di chiamare i reducer, non vengono mai chiamati manualmente
 
 // redux inizialmente parte con uno stato dell'applicazione = undefined
 var state = reducer() 
@@ -283,7 +337,8 @@ Passiamo a scrivere i reducer.  Abbiamo bisogno di un reducer che gestisca la li
     }
   }
   
-  // esempio d'uso
+  // esempio d'uso esplicito, in realtà è lo store che
+  // si occupa di chiamare i reducer
   var state = reducer();  // state === initialState
 
   // poniamo che ci siano arrivati i dati dei documenti dal server
@@ -406,8 +461,92 @@ export default combineReducers({
   modal: modalReducer
 })
 ```
-
-## <a name="store"></a>Store
 ## <a name="recap"></a>Come funzionano insieme
+Ora che abbiamo visto le varie parti che compongono redux, diamo di nuovo un'occhiata d'insieme per vedere come il tutto funziona in un'applicazione. Prenderemo ad esempio l'applicazione di cui abbiamo costruito i reducer nell'esempio precedente.
+```js
+// file store/index.js
+import {createStore} from 'redux';
+import {reducers} from 'reducers';
+
+// crea ed esporta lo store
+export default createStore(reducers)
+```
+
+```js
+// file reducers/index.js
+// questo file è identico a quello creato nell'esempio precedente
+import documentsReducer from 'redux/documents';
+import modalReducer from 'redux/modal';
+import {combineReducers} from 'redux';
+
+export default combineReducers({
+  documents: documentsReducer,
+  modal: modalReducer
+})
+```
+
+```js
+// file redux/documents.js
+const initialState = [];
+const RECEIVE_DOCUMENTS = "RECEIVE_DOCUMENTS";
+
+function receiveDocumentsReducer(state, action) {
+  return actions.payload.documents;
+}
+
+export default function reducer(state=initialState, action) {
+  switch(action.type) {
+    case RECEIVE_DOCUMENTS:
+      return receiveDocumentsReducer(state, action)
+    default: 
+      return state;
+  }
+}
+```
+
+```js
+// file reducers/modal.js
+const initialState = {
+  open: false,
+  documentID: null
+};
+
+const OPEN_DOCUMENT_MODAL = "OPEN_DOCUMENT_MODAL";
+const CLOSE_DOCUMENT_MODAL = "CLOSE_DOCUMENT_MODAL";
+
+function openDocumentModalReducer(state, action) {
+  return {
+    open: true,
+    documentID: actions.payload.documentID
+  }
+}
+function closeDocumentModalReducer(state, action) {
+  return {
+    open: false,
+    documentID: null
+  }
+}
+
+export default function reducer(state=initialState, action) {
+  switch(action.type) {
+    case OPEN_DOCUMENT_MODAL:
+      return openDocumentModalReducer(state, action);
+    case CLOSE_DOCUMENT_MODAL:
+      return closeDocumentModalReducer(state, action);
+    default: 
+      return state;
+  }
+}
+```
+
+```js
+```
+
+```js
+```
+
+```js
+```
+
 ## <a name="reactredux"></a>react-redux
 ## <a name="middleware"></a>Middleware
