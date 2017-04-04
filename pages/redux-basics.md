@@ -462,9 +462,23 @@ export default combineReducers({
 })
 ```
 ## <a name="recap"></a>Come funzionano insieme
-Ora che abbiamo visto le varie parti che compongono redux, diamo di nuovo un'occhiata d'insieme per vedere come il tutto funziona in un'applicazione. Prenderemo ad esempio l'applicazione di cui abbiamo costruito i reducer nell'esempio precedente.
+Ora che abbiamo visto le varie parti che compongono redux, diamo di nuovo un'occhiata d'insieme per vedere come il tutto funziona in un'applicazione. Prenderemo ad esempio l'applicazione di cui abbiamo costruito i reducer nell'esempio precedente.  
+Struttura dei file:
+```
+|-- components
+|  |-- App.js
+|  |-- Modal.js
+|
+|-- redux
+|  |-- documents.js
+|  |-- modal.js
+|  |-- index.js
+|
+|-- index.js
+|-- store.js
+```
 ```js
-// file store/index.js
+// file store.js
 import {createStore} from 'redux';
 import {reducers} from 'reducers';
 
@@ -490,6 +504,17 @@ export default combineReducers({
 const initialState = [];
 const RECEIVE_DOCUMENTS = "RECEIVE_DOCUMENTS";
 
+// action generator
+function receiveDocuments(documents) {
+  return {
+    type: RECEIVE_DOCUMENTS,
+    payload: { documents }
+  }
+}
+// esporto l'action generator
+export { receiveDocuments };
+
+// reducers
 function receiveDocumentsReducer(state, action) {
   return actions.payload.documents;
 }
@@ -505,15 +530,31 @@ export default function reducer(state=initialState, action) {
 ```
 
 ```js
-// file reducers/modal.js
+// file redux/modal.js
 const initialState = {
   open: false,
   documentID: null
 };
 
-const OPEN_DOCUMENT_MODAL = "OPEN_DOCUMENT_MODAL";
-const CLOSE_DOCUMENT_MODAL = "CLOSE_DOCUMENT_MODAL";
+const OPEN_DOCUMENT_MODAL = "OPEN_DOCUMENT_MODAL",
+      CLOSE_DOCUMENT_MODAL = "CLOSE_DOCUMENT_MODAL";
 
+// action generator
+function openDocumentModal(documentID) {
+  return {
+    type: OPEN_DOCUMENT_MODAL,
+    payload: { documentID }
+  }
+}
+function closeDocumentModal() {
+  return {
+    type: OPEN_DOCUMENT_MODAL
+  }
+}
+// esporto gli action generator
+export { openDocumentModal, closeDocumentModal };
+
+// reducers
 function openDocumentModalReducer(state, action) {
   return {
     open: true,
