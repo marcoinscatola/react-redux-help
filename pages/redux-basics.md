@@ -283,36 +283,31 @@ Passiamo a scrivere i reducer.  Abbiamo bisogno di un reducer che gestisca la li
     }
   }
   
-  // esempio d'uso immaginando che esistano componenti, API, 
-  // interazioni utente e un contenitore per lo stato dell'app
-  // in realtà la maggior parte di questo codice non è necessario
-  // in redux una volta implementato uno store, e si riduce
-  // ancora di più con react-redux
-  API.getDocuments()
-  .then(documentsFromServer => {
-    // genera azione RECEIVE_DOCUMENT con payload: { documents: documentsFromServer }
-    let action = receiveDocuments(documentsFromServer);
-    // prende il vecchio stato dell'app
-    let state = App.state;
-    // ottiene il nuovo stato dell'app applicando il reducer
-    let newState = reducer(state, action);
-    // aggiorna l'app con il nuovo stato
-    App.setState(newState);
-  })
+  // esempio d'uso
+  var state = reducer();  // state === initialState
+
+  // poniamo che ci siano arrivati i dati dei documenti dal server
+  var documentsFromServer = [{ id: 1, cliente: "MyPenna", clienteID: 211, importo: 1200}]
+  state = reducer(state, receiveDocuments(documentsFromServer));
+  /* 
+  state === {
+    documents: [{ id: 13, cliente: "MyPenna", clienteID: 211, importo: 1200}],
+    modal: {
+      open: false,
+      documentID: null
+    }
+  } */
   
-  DocumentList.onRowClick( clickedID => {
-    // genera azione OPEN_DOCUMENT_MODAL con payload: { documentID: clickedID }
-    let action = openDocumentModal(clickedID);
-    let state = App.state;
-    let newState = reducer(state, action);
-    App.setState(newState);
-  })
-  
-  ModalCloseButton.onClick( () => {
-    let state = App.state;
-    let newState = reducer(state, closeDocumentModal());
-    App.setState(newState);
-  })
+  // al click dell'utente sulla riga facciamo elaborare quest'altra action
+  state = reducer(state, openDocumentDialog(13));
+  /* 
+  state === {
+    documents: [{ id: 13, cliente: "MyPenna", clienteID: 211, importo: 1200}],
+    modal: {
+      open: true,
+      documentID: 13
+    }
+  } */
 ```
 Una cosa che si nota è che i reducer modificano solo una parte dello stato (per esempio `state.documents` o `state.modal`) ma si complicano un po' perché ricevono come parametro l'intero stato dell'applicazione e devono di nuovo restituire l'intero stato. Questa complessità aumenta all'aumentare della complessità dello stato dell'applicazione.  
 Una soluzione consiste nel passare ad ogni reducer solo la parte di stato di cui si occupa, e gestire l'aggiornamento dello stato complessivo dell'applicazione nel reducer principale. Esempio:
@@ -363,11 +358,13 @@ function openDocumentModalReducer(state, action) {
   return {
     open: true,
     documentID: actions.payload.documentID
+  }
 }
 function closeDocumentModalReducer(state, action) {
   return {
     open: false,
     documentID: null
+  }
 }
 
 // questo è il reducer principale che esportiamo
