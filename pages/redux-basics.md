@@ -465,9 +465,11 @@ export default combineReducers({
 Ora che abbiamo visto le varie parti che compongono redux, diamo di nuovo un'occhiata d'insieme per vedere come il tutto funziona in un'applicazione. Prenderemo ad esempio l'applicazione di cui abbiamo costruito i reducer nell'esempio precedente.  
 Struttura dei file:
 ```
+|-- API // non implementato
 |-- components
 |  |-- App.js
-|  |-- Modal.js
+|  |-- Modal.js // non implementato
+|  |-- List.js  // non implementato
 |
 |-- redux
 |  |-- documents.js
@@ -581,13 +583,76 @@ export default function reducer(state=initialState, action) {
 ```
 
 ```js
+// file: components/App.js
+import React, {Component} from 'react';
+
+// importo i componenti
+import List from 'components/List';
+import Modal from 'components/Modal';
+
+// importo le action che andrò ad usare
+import {openDocumentModal} from 'redux/modal';
+import {receiveDocuments} from 'redux/documents';
+
+// importo API e l'oggetto store
+import API from 'API';
+import store from 'store';
+
+export default class App extends Component {
+
+  constructor(props) {
+    super(props);
+    // per comodità creo delle versioni bound dei metodi interni
+    // in modo da mantenere il contesto
+    this.boundUpdate = this.update.bind(this);
+    this.boundHandleRowClick = this.handleRowClick.bind(this);
+  }
+  
+  // questo viene eseguito appena il componente è aggiunto alla pagina
+  componentDidMount() {
+    // ad ogni update dello store verrà eseguito this.update (versione bound)
+    store.subscribe(this.boundUpdate);
+    // subito dopo chiama il server
+    API.Documenti.lista()
+    // nel callback emette l'action RECEIVE_DOCUMENTS con parametro i documenti
+    // ricevuti dal server
+    .then( listaDocumenti => {
+      store.dispatch(receiveDocuments(listaDocumenti))
+    })
+  }
+  
+  // questo metodo è chiamato ad ogni update dello store, quindi ad ogni dispatch
+  update() {
+    // prende lo stato dell'applicazione
+    let appState = store.getState();
+    // aggiorna il componente con il nuovo stato
+    // facendo così partirà un altro render con le 
+    // informazioni aggiornate
+    this.setState(appState);
+  }
+  
+  // questo metodo è chiamato quando l'utente clicca su una riga della lista
+  handleRowClick(id) {
+    store.dispatch(openDocumentModal(id));
+  }
+  
+  render() {
+    // decostruisce this.state, tirando fuori modal e documents
+    let {modal, documents} = this.state;
+    
+    // renderizza l'applicazione, passando i valori dello state
+    // (che è aggiornato automaticamente dallo store) ai 
+    // componenti interni
+    return (
+      <div>
+        <List data={documents} onRowClick={this.boundHandleRowClick} />
+        <Modal open={modal.open} documentID={modal.documentID} />
+      </div>
+    )
+  }
+}
 ```
 
-```js
-```
-
-```js
-```
 
 ## <a name="reactredux"></a>react-redux
 ## <a name="middleware"></a>Middleware
