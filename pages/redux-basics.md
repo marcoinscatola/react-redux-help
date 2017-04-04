@@ -283,19 +283,25 @@ Passiamo a scrivere i reducer.  Abbiamo bisogno di un reducer che gestisca la li
     }
   }
   
-  // esempio d'uso immaginando che esistano API, 
+  // esempio d'uso immaginando che esistano componenti, API, 
   // interazioni utente e un contenitore per lo stato dell'app
   // in realtà la maggior parte di questo codice non è necessario
-  // in react-redux
+  // in redux una volta implementato uno store, e si riduce
+  // ancora di più con react-redux
   API.getDocuments()
   .then(documentsFromServer => {
-    let action = receiveDocuments(documents);
+    // genera azione RECEIVE_DOCUMENT con payload: { documents: documentsFromServer }
+    let action = receiveDocuments(documentsFromServer);
+    // prende il vecchio stato dell'app
     let state = App.state;
+    // ottiene il nuovo stato dell'app applicando il reducer
     let newState = reducer(state, action);
+    // aggiorna l'app con il nuovo stato
     App.setState(newState);
   })
   
   DocumentList.onRowClick( clickedID => {
+    // genera azione OPEN_DOCUMENT_MODAL con payload: { documentID: clickedID }
     let action = openDocumentModal(clickedID);
     let state = App.state;
     let newState = reducer(state, action);
