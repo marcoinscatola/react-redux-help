@@ -165,7 +165,13 @@ function reducer(state=initialState, action) {
       return state;
   }
 }
+
+// è cambiata l'organizzazione ma non è cambiato il modo di usare il reducer
+var state = reducer() 
+state = reducer(state, openDocument())
+state = reducer(state, closeDocument())
 ```
+
 #### Vantaggi
 Il vantaggio principale dei reducer deriva dagli stessi limiti che impongono: **dati gli stessi parametri in input ritornano sempre lo stesso valore**.  
 Questo ha conseguenze importanti:
@@ -173,6 +179,55 @@ Questo ha conseguenze importanti:
 - Dato uno stato di partenza e una serie di action è possibile ricostruire la storia dello stato dell'applicazione in seguito a quelle modifiche. Ciò permette di riprodurre bug con su macchine diverse dall'originale, automatizzare processi test sull'interfaccia, etc
 - Mantenendo in memoria la serie di actions eseguite, è possibile ricalcolare lo stato attuale escludendo alcune di esse o riapplicandole all'occorrenza. In questo modo è possibile implementare funzioni di undo/redo senza effettuare grosse modifiche.
 - Si è obbligati a separare la logica di business dalle interazioni con il server e con l'utente, creando codice più pulito e riutilizzabile.
+
+#### Reducer per stati complessi
+Nel caso di applicazioni che devono gestire un grande numero di reducer e uno stato molto complesso, si renderà necessario separare i reducer in più metodi (e possibilmente in più file).  
+Poniamo di avere un'applicazione che mostra una lista di documenti e ha la possibilità di aprire il dettaglio del documento in una modale.  Iniziamo dal pensare alla struttura dello stato della nostra applicazione. Sappiamo che dobbiamo mostrare una lista di documenti, quindi avremo bisogno di un array o di un oggetto che ne contenga i dati. Inoltre abbiamo la possibilità di aprire e chiudere una modale (proprietà booleana) e di mostrare un documento all'interno (serve un riferimento ad un elemento della lista).  
+Una possibile struttura potrebbe essere questa:
+```js
+var state = {
+  documents: [{
+    id: 217,
+    cliente: "RottureInCloud",
+    clienteID: 567,
+    importo: 2000
+  }, {
+    id: 122,
+    cliente: "EvaGestionale",
+    clienteID: 331,
+    importo: 1000
+  }],
+  modal: {
+    open: true,
+    documentID: 217
+  }
+}
+```
+A questo punto consideriamo di che tipo di actions avremo bisogno. Sicuramente dovremo poter ricevere i dati con cui popolare la lista di documenti. Inoltre avremo bisogno di poter aprire un documento in una modale, e chiudere la modale stessa.  
+Queste potrebbero essere i generatori di actions corrispondenti:
+```js
+  const RECEIVE_DOCUMENTS = "RECEIVE_DOCUMENTS",
+        OPEN_DOCUMENT_MODAL = "OPEN_DOCUMENT_MODAL",
+        CLOSE_DOCUMENT_MODAL = "CLOSE_DOCUMENT_MODAL";
+
+  const receiveDocuments = documents => ({
+    type: RECEIVE_DOCUMENTS,
+    payload: { 
+      documents: documents
+    }
+  })
+  
+  const openDocumentModal = documentID => ({
+    type: OPEN_DOCUMENT_MODAL,
+    payload: {
+      documentID: documentID
+    }
+  })
+  
+  const closeDocumentModal = () => ({
+    type: CLOSE_DOCUMENT_MODAL
+  })
+```
 ## <a name="store"></a>Store
 ## <a name="recap"></a>Come funzionano insieme
 ## <a name="reactredux"></a>react-redux
