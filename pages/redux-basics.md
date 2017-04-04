@@ -582,7 +582,7 @@ export default function reducer(state=initialState, action) {
 }
 ```
 
-```js
+```jsx
 // file: components/App.js
 import React, {Component} from 'react';
 
