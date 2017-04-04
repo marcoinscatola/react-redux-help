@@ -314,6 +314,101 @@ Passiamo a scrivere i reducer.  Abbiamo bisogno di un reducer che gestisca la li
     App.setState(newState);
   })
 ```
+Una cosa che si nota è che i reducer modificano solo una parte dello stato (per esempio `state.documents` o `state.modal`) ma si complicano un po' perché ricevono come parametro l'intero stato dell'applicazione e devono di nuovo restituire l'intero stato. Questa complessità aumenta all'aumentare della complessità dello stato dell'applicazione.  
+Una soluzione consiste nel passare ad ogni reducer solo la parte di stato di cui si occupa, e gestire l'aggiornamento dello stato complessivo dell'applicazione nel reducer principale. Esempio:
+```js
+// file redux/documents.js
+// scriviamo un reducer che gestisca unicamente la parte state.documents
+
+// lo stato iniziale di state.documents è un array vuoto
+const initialState = [];
+
+// costanti relative a state.documents
+const RECEIVE_DOCUMENTS = "RECEIVE_DOCUMENTS";
+
+// questo reducer in state riceve state.documents
+// e il valore di ritorno andrà in state.documents
+function receiveDocumentsReducer(state, action) {
+  return actions.payload.documents;
+}
+
+// questo è il reducer principale che esportiamo
+export default function reducer(state=initialState, action) {
+  // gestisce solo le action relative a state.documents
+  switch(action.type) {
+    case RECEIVE_DOCUMENTS:
+      return receiveDocumentsReducer(state, action)
+    default: 
+      return state;
+  }
+}
+```
+```js
+// file reducers/modal.js
+// scriviamo un reducer che gestisca unicamente la parte state.modal
+
+// lo stato iniziale di state.modal è un oggetto con questa struttura
+const initialState = {
+  open: false,
+  documentID: null
+};
+
+// costanti relative a state.documents
+const OPEN_DOCUMENT_MODAL = "OPEN_DOCUMENT_MODAL";
+const CLOSE_DOCUMENT_MODAL = "CLOSE_DOCUMENT_MODAL";
+
+// questi reducer in state ricevono state.modal
+// e il valore di ritorno andrà in state.modal
+function openDocumentModalReducer(state, action) {
+  return {
+    open: true,
+    documentID: actions.payload.documentID
+}
+function closeDocumentModalReducer(state, action) {
+  return {
+    open: false,
+    documentID: null
+}
+
+// questo è il reducer principale che esportiamo
+export default function reducer(state=initialState, action) {
+  // gestisce solo le action relative a state.modal
+  switch(action.type) {
+    case OPEN_DOCUMENT_MODAL:
+      return openDocumentModalReducer(state, action);
+    case CLOSE_DOCUMENT_MODAL:
+      return closeDocumentModalReducer(state, action);
+    default: 
+      return state;
+  }
+}
+```
+```js
+// file redux/index.js
+// scriviamo un reducer che metta insieme i reducer precedenti
+
+// importiamo gli altri due reducer
+import documentsReducer from 'redux/documents';
+import modalReducer from 'redux/modal';
+
+// non c'è bisogno di stato iniziale perché gestito dai 
+// reducer creati prima
+export default function reducer(state={}, action) {
+  return {
+    documents: documentsReducer(state.documents, action),
+    modal: modalReducer(state.modal, action)
+  }
+}
+
+// in alternativa, il metodo combineReducers di redux 
+// ci semplifica un po' quest'ultima parte
+import {combineReducers} from 'redux'
+
+export default combineReducers({
+  documents: documentsReducer,
+  modal: modalReducer
+})
+```
 
 ## <a name="store"></a>Store
 ## <a name="recap"></a>Come funzionano insieme
